@@ -42,19 +42,19 @@ export function Nav() {
             <Search className="w-4 h-4 text-slate-600" />
           </button>
 
-          <button
-            type="button"
+          <Link
+            href="/signin/"
             aria-label="Account"
             className="w-9 h-9 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 hover:from-blue-500 hover:to-blue-700 transition flex items-center justify-center text-white shadow-md"
           >
             <User className="w-4 h-4" />
-          </button>
+          </Link>
 
           <Link
-            href="/ai300/"
+            href="/signin/"
             className="hidden sm:flex bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-600 transition shadow-lg shadow-slate-900/10 active:scale-95"
           >
-            Join the Army
+            Sign up
           </Link>
         </div>
       </div>

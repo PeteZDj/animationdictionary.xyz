@@ -1,0 +1,44 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "animationdictionary-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-15",
+  "compatibility_flags": ["nodejs_compat"],
+
+  // Route /api/* on the apex domain to this Worker. IIS keeps serving the
+  // static site; Cloudflare sends only /api/* here, so the browser calls the
+  // API same-origin (no CORS needed in production).
+  "routes": [
+    { "pattern": "animationdictionary.xyz/api/*", "zone_name": "animationdictionary.xyz" }
+  ],
+
+  "vars": {
+    "SITE_ORIGIN": "https://animationdictionary.xyz",
+    "API_BASE": "https://animationdictionary.xyz/api"
+  },
+
+  // D1: the SQL dictionary. Fill database_id after `npm run db:create`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "animationdictionary",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // R2: rig kits + uploaded animation bundles.
+  "r2_buckets": [
+    { "binding": "BUCKET", "bucket_name": "animationdictionary-assets" }
+  ],
+
+  "observability": { "enabled": true, "head_sampling_rate": 1 }
+
+  // Secrets (set with `wrangler secret put <NAME>`):
+  //   SESSION_SECRET          random 32+ byte string (signs session/state cookies)
+  //   GOOGLE_CLIENT_ID        Google OAuth client id      (also backs AfroSoftware)
+  //   GOOGLE_CLIENT_SECRET    Google OAuth client secret
+  //   GITHUB_CLIENT_ID        GitHub OAuth client id
+  //   GITHUB_CLIENT_SECRET    GitHub OAuth client secret
+  //   RESEND_API_KEY          (optional) for email magic-link delivery
+}

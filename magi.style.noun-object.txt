@@ -1,0 +1,22 @@
+PRODUCT HERO SHOT of a single inanimate object or structure. NOT a character.
+
+SCENE (locked across all images):
+- Seamless soft slate-50 (#F8FAFC) cyclorama backdrop. Floor and wall blend with no horizon line.
+- Object centred, full silhouette visible with comfortable headroom and ground room.
+- Soft contact shadow on the floor directly beneath. No environment props, no characters, no background clutter.
+
+LIGHTING (locked across all images):
+- Three-point studio rig:
+  * Cool diffuse key from upper-front-left.
+  * Warm amber rim from upper-back-right.
+  * Soft bounce fill from below.
+- Soft specular highlights on any metallic or polished surfaces.
+
+CAMERA (locked across all images):
+- 50mm lens, f/2.8, slightly elevated eye level (~10 degrees above) so the object reads as a presented hero asset, square 1:1 framing.
+- Object angled in a flattering 3/4 view to camera (never straight-on flat).
+
+RENDER:
+- High-end Pixar / Disney studio quality. Stylised, soft-cornered, slightly inflated geometry — appealing not photoreal.
+- Subtle visual story details where appropriate (e.g. a chest's lid slightly ajar with a soft glow inside; a wand crystal faintly glowing; tree leaves with subtle drift) — but no environment, no characters, no held props.
+- NO text overlays, NO watermarks, NO UI, NO captions, NO annotations anywhere in the image.

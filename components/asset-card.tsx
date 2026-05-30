@@ -1,17 +1,14 @@
 import Link from "next/link";
 import { PlayCircle, Package, Box } from "lucide-react";
 import type { MarketplaceItem } from "@/data/marketplace";
+import { VERBS } from "@/data/verbs";
+import { NOUNS } from "@/data/nouns";
 
-// Slugs that have a finished robot/character image rendered to /public/img/.
-// Append here as new magi batches come in.
-const VERBS_WITH_IMG = new Set([
-  "walk", "backflip", "punch", "wave", "crouch",
-  "run",  "sprint",   "jog",   "march", "strut",
-  "saunter", "trudge", "limp", "stagger",
-]);
-const NOUNS_WITH_IMG = new Set([
-  "knight", "wizard", "ninja", "samurai", "archer", "rogue",
-]);
+// After the full magi fillout every verb and noun has a corresponding
+// PNG under /public/img/{verbs,nouns}/. The sets are derived from the
+// data so we never have to hand-maintain a parallel list.
+const VERBS_WITH_IMG = new Set(VERBS.map((v) => v.slug));
+const NOUNS_WITH_IMG = new Set(NOUNS.map((n) => n.slug));
 
 const TINTS = [
   "bg-blue-50 text-blue-400",

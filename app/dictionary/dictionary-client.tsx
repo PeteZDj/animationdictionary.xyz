@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   BookOpenText,
@@ -17,6 +17,7 @@ import {
   PartyPopper,
 } from "lucide-react";
 import { LEXICON, COVERAGE, type LexEntry } from "@/data/dictionary";
+import { api } from "@/lib/api";
 
 type Tab = "all" | "covered" | "open";
 const RIG_OPTIONS = ["UE5", "Unity", "Mixamo", "Maya", "Blender", "Metahuman"];
@@ -30,15 +31,51 @@ export function DictionaryClient() {
   const [query, setQuery] = useState("");
   const [claim, setClaim] = useState<LexEntry | null>(null);
 
+  // Live hydration from the Worker API; falls back to the static lexicon when
+  // the API is not deployed yet (or unreachable).
+  const [live, setLive] = useState<{ cov: typeof COVERAGE; entries: LexEntry[] } | null>(null);
+  const [apiUp, setApiUp] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const [me, cov, w] = await Promise.all([api.getMe(), api.getCoverage(), api.getWords("all")]);
+      if (!alive) return;
+      if (me) setSignedIn(!!me.user);
+      if (cov) {
+        setApiUp(true);
+        if (w?.words) {
+          const entries: LexEntry[] = w.words.map((x) => ({
+            word: x.word,
+            covered: x.covered,
+            slug: x.slug ?? undefined,
+            category: x.category ?? undefined,
+            animations: x.animations,
+          }));
+          setLive({ cov: cov as unknown as typeof COVERAGE, entries });
+        } else {
+          setLive({ cov: cov as unknown as typeof COVERAGE, entries: LEXICON });
+        }
+      }
+    })();
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  const cov = live?.cov ?? COVERAGE;
+  const source = live?.entries ?? LEXICON;
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return LEXICON.filter((e) => {
+    return source.filter((e) => {
       if (tab === "covered" && !e.covered) return false;
       if (tab === "open" && e.covered) return false;
       if (q && !e.word.includes(q)) return false;
       return true;
     });
-  }, [tab, query]);
+  }, [tab, query, source]);
 
   return (
     <div className="bg-gradient-to-b from-white to-slate-50 text-slate-900 min-h-screen pt-10 md:pt-16 pb-24">
@@ -65,21 +102,21 @@ export function DictionaryClient() {
                   Core action lexicon
                 </div>
                 <div className="text-4xl md:text-5xl font-black tabular-nums">
-                  {pctText(COVERAGE.pctLexicon, 0)}
+                  {pctText(cov.pctLexicon, 0)}
                 </div>
               </div>
               <div className="text-right text-sm font-mono text-slate-400">
-                {COVERAGE.lexiconCovered} / {COVERAGE.lexiconSize} words
+                {cov.lexiconCovered} / {cov.lexiconSize} words
               </div>
             </div>
             <div className="h-3 rounded-full bg-slate-100 overflow-hidden">
               <div
                 className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-500"
-                style={{ width: pctText(COVERAGE.pctLexicon) }}
+                style={{ width: pctText(cov.pctLexicon) }}
               />
             </div>
             <p className="text-xs text-slate-400 mt-3">
-              The everyday verbs people search for most. {COVERAGE.lexiconOpen} still open to claim.
+              The everyday verbs people search for most. {cov.lexiconOpen} still open to claim.
             </p>
           </div>
 
@@ -88,19 +125,19 @@ export function DictionaryClient() {
               Whole English dictionary
             </div>
             <div className="text-4xl md:text-5xl font-black tabular-nums">
-              {pctText(COVERAGE.pctDictionary, 3)}
+              {pctText(cov.pctDictionary, 3)}
             </div>
             <p className="text-xs text-slate-400 mt-2 font-mono">
-              {COVERAGE.coveredWords.toLocaleString()} / {COVERAGE.dictionaryTotal.toLocaleString()} words
+              {cov.coveredWords.toLocaleString()} / {cov.dictionaryTotal.toLocaleString()} words
             </p>
           </div>
         </div>
 
         {/* ── Stat strip ──────────────────────────────────────────── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          <Stat icon={Check}      value={COVERAGE.coveredWords.toLocaleString()} label="Words Covered" />
-          <Stat icon={Film}       value={COVERAGE.animations.toLocaleString()}   label="Animations Available" accent />
-          <Stat icon={PlusCircle} value={COVERAGE.lexiconOpen.toLocaleString()}  label="Words Open to Claim" />
+          <Stat icon={Check}      value={cov.coveredWords.toLocaleString()} label="Words Covered" />
+          <Stat icon={Film}       value={cov.animations.toLocaleString()}   label="Animations Available" accent />
+          <Stat icon={PlusCircle} value={cov.lexiconOpen.toLocaleString()}  label="Words Open to Claim" />
           <Stat icon={Sparkles}   value="$1"                                     label="Per Animation" accent />
         </div>
 
@@ -108,7 +145,7 @@ export function DictionaryClient() {
         <div className="flex items-center gap-3 mb-6 flex-wrap">
           <h2 className="text-2xl font-black">The Lexicon</h2>
           <span className="text-xs text-slate-400 font-mono">
-            showing {filtered.length} of {COVERAGE.lexiconSize}
+            showing {filtered.length} of {cov.lexiconSize}
           </span>
           <div className="h-px flex-1 bg-slate-200 min-w-[2rem]" />
           <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3">
@@ -124,9 +161,9 @@ export function DictionaryClient() {
 
         <div className="flex flex-wrap gap-2 mb-8">
           {([
-            { id: "all",     label: "All",            n: COVERAGE.lexiconSize },
-            { id: "covered", label: "Animated",       n: COVERAGE.lexiconCovered },
-            { id: "open",    label: "Open to claim",  n: COVERAGE.lexiconOpen },
+            { id: "all",     label: "All",            n: cov.lexiconSize },
+            { id: "covered", label: "Animated",       n: cov.lexiconCovered },
+            { id: "open",    label: "Open to claim",  n: cov.lexiconOpen },
           ] as { id: Tab; label: string; n: number }[]).map((t) => (
             <button
               key={t.id}
@@ -174,7 +211,14 @@ export function DictionaryClient() {
         </div>
       </div>
 
-      {claim && <ClaimModal entry={claim} onClose={() => setClaim(null)} />}
+      {claim && (
+        <ClaimModal
+          entry={claim}
+          apiUp={apiUp}
+          signedIn={signedIn}
+          onClose={() => setClaim(null)}
+        />
+      )}
     </div>
   );
 }
@@ -252,13 +296,24 @@ function WordCard({ entry, onClaim }: { entry: LexEntry; onClaim: () => void }) 
   );
 }
 
-function ClaimModal({ entry, onClose }: { entry: LexEntry; onClose: () => void }) {
+function ClaimModal({
+  entry,
+  apiUp,
+  signedIn,
+  onClose,
+}: {
+  entry: LexEntry;
+  apiUp: boolean;
+  signedIn: boolean;
+  onClose: () => void;
+}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [rigs, setRigs] = useState<string[]>(["UE5"]);
   const [tags, setTags] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [done, setDone] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   function toggleRig(r: string) {
     setRigs((prev) => (prev.includes(r) ? prev.filter((x) => x !== r) : [...prev, r]));
@@ -268,7 +323,29 @@ function ClaimModal({ entry, onClose }: { entry: LexEntry; onClose: () => void }
     if (t && !tags.includes(t)) setTags((prev) => [...prev, t]);
     setTagInput("");
   }
-  const canSubmit = name.trim() && email.includes("@") && rigs.length > 0;
+
+  // When the API is live but the user isn't signed in, send them to sign-in.
+  const needsSignin = apiUp && !signedIn;
+  const canSubmit = needsSignin || (name.trim() && email.includes("@") && rigs.length > 0);
+
+  async function submit() {
+    if (needsSignin) {
+      window.location.href = `/signin/?return=/dictionary/`;
+      return;
+    }
+    if (apiUp) {
+      setBusy(true);
+      const res = await api.claim(entry.word, rigs, tags);
+      setBusy(false);
+      if (res.status === 401) {
+        window.location.href = `/signin/?return=/dictionary/`;
+        return;
+      }
+    }
+    setDone(true); // also covers the pre-backend preview (apiUp === false)
+  }
+
+  const rigHref = apiUp ? api.rigUrl(rigs[0] ?? "UE5") : "#";
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm" onClick={onClose}>
@@ -294,12 +371,17 @@ function ClaimModal({ entry, onClose }: { entry: LexEntry; onClose: () => void }
               We’ve reserved <span className="font-bold capitalize">{entry.word}</span> for you and emailed your rig
               kit + upload link{tags.length > 0 && <> with {tags.length} tag{tags.length > 1 ? "s" : ""}</>}.
             </p>
-            <button className="inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-xl font-black text-sm hover:bg-blue-600 transition">
+            <a
+              href={rigHref}
+              className="inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-3 rounded-xl font-black text-sm hover:bg-blue-600 transition"
+            >
               <Download className="w-4 h-4" /> Download rig kit
-            </button>
-            <p className="text-[11px] text-slate-400 mt-4">
-              Preview flow — accounts, real rig downloads, and uploads land with the API.
-            </p>
+            </a>
+            {!apiUp && (
+              <p className="text-[11px] text-slate-400 mt-4">
+                Preview flow — accounts, real rig downloads, and uploads land with the API.
+              </p>
+            )}
           </div>
         ) : (
           <>
@@ -366,15 +448,18 @@ function ClaimModal({ entry, onClose }: { entry: LexEntry; onClose: () => void }
             </div>
 
             <button
-              disabled={!canSubmit}
-              onClick={() => setDone(true)}
+              disabled={!canSubmit || busy}
+              onClick={submit}
               className={"mt-7 w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition " +
-                (canSubmit ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-95" : "bg-slate-100 text-slate-400 cursor-not-allowed")}
+                (canSubmit && !busy ? "bg-blue-600 text-white hover:bg-blue-700 active:scale-95" : "bg-slate-100 text-slate-400 cursor-not-allowed")}
             >
-              <Download className="w-4 h-4" /> Claim & get the rig kit
+              <Download className="w-4 h-4" />{" "}
+              {needsSignin ? "Sign in to claim" : busy ? "Claiming…" : "Claim & get the rig kit"}
             </button>
             <p className="text-[11px] text-slate-400 mt-3 text-center">
-              Preview — no account needed yet. Sign-up, rig downloads & uploads arrive with the API.
+              {apiUp
+                ? "Your claim reserves the word and emails your rig kit + upload link."
+                : "Preview — sign-up, rig downloads & uploads go live once the API is deployed."}
             </p>
           </>
         )}

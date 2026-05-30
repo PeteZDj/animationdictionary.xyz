@@ -1,0 +1,24 @@
+{
+  "name": "animationdictionary-api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloudflare Worker API for animationdictionary.xyz — dictionary coverage, auth, claims, uploads.",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run",
+    "typecheck": "tsc --noEmit",
+    "types": "wrangler types",
+    "db:create": "wrangler d1 create animationdictionary",
+    "db:migrate:local": "wrangler d1 migrations apply animationdictionary --local",
+    "db:migrate": "wrangler d1 migrations apply animationdictionary --remote",
+    "db:seed:local": "wrangler d1 execute animationdictionary --local --file ../db/seed.sql",
+    "db:seed": "wrangler d1 execute animationdictionary --remote --file ../db/seed.sql"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250510.0",
+    "typescript": "^5.6.0",
+    "wrangler": "^4.0.0"
+  }
+}

@@ -1,0 +1,10 @@
+# Copy to .dev.vars for local `wrangler dev`. NEVER commit the real .dev.vars.
+SESSION_SECRET=dev-only-change-me-to-a-long-random-string
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+RESEND_API_KEY=
+# Local dev overrides (production reads these from wrangler.jsonc vars)
+SITE_ORIGIN=http://localhost:3000
+API_BASE=http://localhost:8787/api
