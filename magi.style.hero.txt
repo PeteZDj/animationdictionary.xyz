@@ -1,0 +1,26 @@
+CINEMATIC HERO KEY ART. Single still frame. Anamorphic 16:9 wide framing (square output is fine; subject placed so a centre-crop or right-crop still works).
+
+THE SUBJECT (USE IDENTICALLY):
+The recurring "barracks robot" character — stylised humanoid mannequin-robot, matte off-white plastic body (#F1F5F9) with charcoal grey accents (#334155) at the visible joints, glossy cobalt-blue chest panel (#2563EB), simple rounded ovoid helmet head with a thin dark visor stripe across where the eyes would be. No clothing, no held props, no decals. Adult proportions ~7.5 heads tall.
+
+COMPOSITION:
+- Robot positioned in the RIGHT THIRD of the frame.
+- LEFT TWO-THIRDS is intentionally empty atmospheric darkness — this is where headline text will be overlaid by the website. Do NOT add text or props in that area.
+- Slight low-angle camera for heroism.
+
+ENVIRONMENT:
+- Deep moody atmospheric darkness. Background gradient from near-black (#0B1220) on the left to a hint of cobalt indigo on the right, with subtle volumetric haze.
+- A few faint ghosted "echo" limbs / motion-blur trails sweeping behind the robot, suggesting multiple frames of an action arc overlaid. Keep the echoes subtle, never disrupting the main silhouette.
+
+LIGHTING:
+- Strong cool cobalt key light from the upper-right hitting the front of the robot.
+- Warm amber rim from behind-left rim-lighting the silhouette edge.
+- Subtle bounce fill catching the chest panel.
+- Slight cinematic bloom on highlights.
+
+CAMERA:
+- Anamorphic feel, shallow depth of field, slight chromatic-aberration bloom on highlights only.
+
+RENDER:
+- High-end film key-art quality. Pixar / DreamWorks production polish, stylised but credible.
+- ABSOLUTELY NO text, no logos, no captions, no UI elements, no watermarks, no annotations anywhere in the image.

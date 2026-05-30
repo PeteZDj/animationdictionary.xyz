@@ -1,0 +1,29 @@
+CHARACTER HERO PORTRAIT. Single still frame per image. Each image features a DIFFERENT character, but the studio production look is IDENTICAL across the batch — the consistency comes from the studio, not the subject.
+
+SCENE (locked across all images):
+- Seamless soft slate-50 (#F8FAFC) cyclorama backdrop. Floor and wall blend with no horizon line.
+- Character centred. Full body visible from helmet/head to feet, with comfortable headroom and ground room. Soft contact shadow on the floor directly beneath.
+- No environment props, no other characters, no background clutter, no horizon.
+
+LIGHTING (locked across all images):
+- Three-point studio rig:
+  * Cool diffuse key from upper-front-left.
+  * Warm amber rim from upper-back-right.
+  * Soft bounce fill from below.
+- Soft specular highlights on any metallic surfaces.
+
+CAMERA (locked across all images):
+- 50mm lens, f/2.8, eye level, square 1:1 framing.
+
+CHARACTER POSE (locked across all images):
+- Neutral hero portrait pose with slight contrapposto. Weight on one leg, the other slightly forward and relaxed.
+- Looking gently 3/4 angle toward camera.
+- Calm confident expression (where the design has a face).
+- Arms relaxed but with personality (a sword hand resting on a hilt, a wizard hand near a staff, etc.).
+
+SUBJECT:
+- Whatever the per-image prompt specifies. The subject design is the only thing that changes between images.
+
+RENDER:
+- High-end Pixar studio quality. Stylised but anatomically credible.
+- NO text overlays, NO watermarks, NO UI, NO captions, NO annotations anywhere in the image.

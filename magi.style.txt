@@ -1,0 +1,26 @@
+A single recurring robot character performs the action. Use IDENTICAL robot design across every image in this batch:
+
+ROBOT DESIGN:
+- Stylised humanoid mannequin-robot, matte off-white plastic body (#F1F5F9) with charcoal grey accents (#334155) at the visible articulation joints (shoulders, elbows, wrists, hips, knees, ankles).
+- Smooth, soft-cornered limbs. Slightly inflated, Pixar / Mixamo "T-pose-ready" proportions. Adult ergonomic ratio (~7.5 heads tall).
+- Single brand accent: a glossy cobalt-blue panel (#2563EB) on the chest plate.
+- Simple rounded ovoid helmet head, no facial features, no eyes, no mouth. Subtle thin dark visor stripe across where the eyes would be.
+- No clothing, no fabric, no decals, no text, no logos, no held props.
+
+SCENE:
+- Seamless soft slate-50 (#F8FAFC) cyclorama backdrop — floor and wall blend with no horizon line.
+- Subject centred, full body visible with comfortable headroom and ground room.
+- Soft contact shadow directly beneath the robot on the floor.
+- No environment props, no other characters, no background clutter.
+
+LIGHTING:
+- Three-point studio rig. Cool diffuse key light from upper-front-left. Warm amber rim light from upper-back-right (subtly hitting joint accents). Soft bounce fill from below.
+- Shallow specular highlights on the chest panel and joints.
+
+CAMERA:
+- 50mm lens, f/2.8, eye level, square 1:1 framing.
+
+RENDER:
+- High-end Pixar studio quality, stylised but anatomically credible motion.
+- No text overlays, no watermarks, no UI elements, no captions, no annotations.
+- Single still frame of the action captured at the most readable pose moment.

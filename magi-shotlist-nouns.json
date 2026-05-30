@@ -1,0 +1,26 @@
+[
+  {
+    "name": "noun-knight",
+    "prompt": "Medieval armoured knight character. Full plate steel armour with polished cool blue-tinted highlights, a tabard with a simple heraldic emblem over the chest, a longsword sheathed at the left hip with the right hand resting calmly on the hilt, a helmet tucked under the left arm revealing a brave determined adult human face, gauntleted hands."
+  },
+  {
+    "name": "noun-wizard",
+    "prompt": "Robed wizard character. Long flowing deep indigo robe with subtle constellation-pattern stitching along the hem, a tall ornate wooden staff topped with a faceted blue crystal held vertically in the left hand, a long white wispy beard visible beneath a deep hood, an intricate leather belt with two hanging spell-scrolls and a small pouch."
+  },
+  {
+    "name": "noun-ninja",
+    "prompt": "Stealth ninja character. Close-fitting charcoal black tunic and trousers with a fitted chest harness, hooded face mask covering everything except the eyes, twin short blades sheathed on the back forming an X, wrappings on the forearms and shins, light split-toe boots, a slight crouch-ready stance with one hand hovering near a hilt."
+  },
+  {
+    "name": "noun-samurai",
+    "prompt": "Feudal Japanese samurai character. Lacquered crimson and black overlapping plate armour, a distinctive horned helmet with a face guard pushed up, a katana sheathed at the left hip with the right hand resting lightly on the hilt, traditional sandals, a calm confident expression, formal balanced upright stance."
+  },
+  {
+    "name": "noun-archer",
+    "prompt": "Forest ranger archer character. Green and tan leather scout outfit with a hood pulled back to the shoulders, a full quiver of fletched arrows strapped on the back, a tall longbow held diagonally across the body in the left hand, soft-soled brown boots, leather bracers on the forearms, alert hero stance scanning the middle distance."
+  },
+  {
+    "name": "noun-rogue",
+    "prompt": "Light-armour rogue character. Dark slate-grey hooded leather jerkin with multiple small pouches across the chest, twin matched daggers on a hip belt (one on each side), fingerless gloves, lithe agile build, a slight smirk visible under the hood, weight on the back leg with one hand hovering near a dagger hilt."
+  }
+]

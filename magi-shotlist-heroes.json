@@ -1,0 +1,14 @@
+[
+  {
+    "name": "hero-army",
+    "prompt": "The recurring barracks robot character in a dramatic upright hero stance — chest forward, head tilted slightly up, both fists clenched at the sides in disciplined elite-tier readiness, weight evenly balanced on both legs. Strong WARM AMBER key light dominates from the upper right; cooler cobalt rim from behind-left edging the silhouette. Subtle gold-metallic specular catches on the chest panel and joint accents. The mood is elite, gold-medal, military prestige — a far more amber-dominant palette than the cobalt default. Robot positioned in the RIGHT THIRD of the frame leaving the LEFT TWO-THIRDS as empty atmospheric darkness (gradient near-black to deep warm umber) for headline text overlay."
+  },
+  {
+    "name": "hero-stockpile",
+    "prompt": "The recurring barracks robot character mid-leap forward in a powerful traversal pose, body angled diagonally forward and slightly twisted, knees tucked, one arm extended ahead. Surrounded by faint ghosted ECHO versions of itself in OTHER poses — a translucent punch echo, a translucent vault echo, a translucent crouch echo, a translucent kick echo — overlaid as semi-transparent blue-tinted silhouettes radiating outward like a motion library compressed into one frame. The main robot is sharp and clearly lit; the echoes are subtle and atmospheric, not competing with the silhouette. Cool cobalt key from upper-right with amber rim from behind-left. Robot positioned in the RIGHT THIRD of the frame leaving the LEFT TWO-THIRDS empty for headline overlay."
+  },
+  {
+    "name": "hero-upload",
+    "prompt": "The recurring barracks robot character standing in a confident presentation stance — one hand raised palm-up in front of the chest as if offering or showcasing something, soft glowing cobalt-blue energy emanating subtly from the raised palm (light volumetric glow, not a hard object), other hand on the hip. Looking outward toward the viewer. The body language reads as 'creator presenting their work to an audience.' Cool cobalt key from upper-right with subtle amber rim. Robot positioned in the RIGHT THIRD of the frame leaving the LEFT TWO-THIRDS empty for headline overlay."
+  }
+]

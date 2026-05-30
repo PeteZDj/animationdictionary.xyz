@@ -1,0 +1,38 @@
+[
+  {
+    "name": "verb-run",
+    "prompt": "The robot character running forward at a brisk athletic pace. Mid-stride: one leg fully extended behind in push-off, the other lifted forward with knee at hip height, both arms in counter-balance swing (one fist forward at chest, the other pulled back), upper body leaned slightly forward, head determined and facing forward. Captured at the airborne moment between footfalls."
+  },
+  {
+    "name": "verb-sprint",
+    "prompt": "The robot character sprinting at maximum velocity. Aggressive forward-leaning posture nearly parallel to the ground in a power dash, arms pumping hard with one fist driving forward past the face and the other pulled tight back at the ribs, one knee driving up high, opposite leg fully extended back in long stride. Captured at peak power of the stride."
+  },
+  {
+    "name": "verb-jog",
+    "prompt": "The robot character jogging at a steady relaxed cadence. Upright easy posture, mid-stride with one foot softly contacting the ground and the other lifted at a low knee height, arms bent at relaxed ninety degrees swinging naturally, shoulders calm and relaxed. Captured mid-step with an easy unhurried feel."
+  },
+  {
+    "name": "verb-march",
+    "prompt": "The robot character marching in a disciplined exaggerated military cadence. Stiff upright posture, leading leg lifted very high with the knee at hip level and the foot pointed forward straight, opposing arm raised straight in front at shoulder height with a clenched fist, opposite leg planted with toe pointed sharply forward, opposite arm pulled straight back. Captured at the apex of the high-step parade."
+  },
+  {
+    "name": "verb-strut",
+    "prompt": "The robot character strutting with confident attitude. Shoulders rolled back proudly with chest out, slight hip sway, one hand resting on the hip and the other swinging loose with a casual wrist flick, mid-stride with one leg forward planted and the other trailing back, head tilted back slightly with cocky posture. Captured mid-stride with swagger."
+  },
+  {
+    "name": "verb-saunter",
+    "prompt": "The robot character sauntering at a leisurely pace. Very relaxed loose posture with a slight shoulder slouch, hands hanging easy at the sides with mildly bent elbows, head tilted slightly to one side, mid-step at a slow lazy cadence with one foot just touching the ground softly. Captured at a calm in-between step with no urgency."
+  },
+  {
+    "name": "verb-trudge",
+    "prompt": "The robot character trudging heavily as if under exhaustion or load. Shoulders slumped forward and down, head bowed slightly, knees slightly bent at all times, dragging one foot heavily as it lifts barely off the ground, opposite arm hanging limp at the side, very slow weary body language. Captured at the heaviest part of the slow step."
+  },
+  {
+    "name": "verb-limp",
+    "prompt": "The robot character limping. Asymmetric pose strongly favoring the right leg — the left leg is the injured one and drags slightly behind with the knee not fully extended and the toes pointing down, the right leg is planted firmly bearing all the weight, the body leans noticeably to the right side away from the injured leg, the left arm reaches out slightly for balance. Captured at the moment of weight transfer onto the good leg."
+  },
+  {
+    "name": "verb-stagger",
+    "prompt": "The robot character staggering as if off-balance after an impact. Body twisted unstably with weight thrown sideways, one foot planted while the other lifts awkwardly trying to catch balance, arms flung wide and asymmetric to counterweight, head tilted back, posture clearly precarious and about to either recover or fall. Captured at peak instability."
+  }
+]

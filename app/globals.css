@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+}
+
+/* hide scrollbars on horizontal ribbons and side panes */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+
+/* the Animation 300 dark gradient */
+.army-gradient {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* canvas backdrop for the 3D viewer */
+canvas { display: block; }
+
+/* slideshow progress-bar fill animation */
+@keyframes magi-progress {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}

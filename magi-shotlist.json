@@ -1,0 +1,22 @@
+[
+  {
+    "name": "verb-walk",
+    "prompt": "The robot character walking forward at a relaxed cadence. Mid-stride pose: left foot landing heel-first, right foot pushing off behind, right arm swinging forward in counter-balance, left arm trailing back, head looking forward, shoulders level, hips slightly rotated. Captured at the weight-transfer moment with a hint of forward motion energy."
+  },
+  {
+    "name": "verb-backflip",
+    "prompt": "The robot character mid-backflip rotation, fully airborne. Body inverted at the apex of rotation, knees tucked tight toward the chest, both arms tucked in for spin compactness, head tipped back following the rotation, toes pointed. Captured at the exact apex when the body is upside down and parallel to the floor."
+  },
+  {
+    "name": "verb-punch",
+    "prompt": "The robot character throwing a forward straight punch. Right arm fully extended forward at shoulder height, fist clenched and aligned with the wrist, right hip rotated forward to drive power, left arm pulled back to the rib in chambered counter-balance, weight loaded on the front leg, head forward, shoulders square. Captured at the moment of maximum extension."
+  },
+  {
+    "name": "verb-wave",
+    "prompt": "The robot character standing upright and waving hello with the right hand. Weight on both feet, hips and shoulders square, right arm raised so the hand is above the helmet level, palm forward, fingers slightly spread, wrist gently flexed in a friendly wave motion, left arm relaxed by the side, head tilted very slightly toward the viewer. Captured mid-wave at the most readable open-hand moment."
+  },
+  {
+    "name": "verb-crouch",
+    "prompt": "The robot character in a low alert crouch. Knees deeply bent, hips low and pulled back, weight evenly distributed on both feet, both forearms resting on the front of the thighs near the knees for balance, torso angled slightly forward, head up and looking forward with alertness, spine extended. Captured as a held stable pose."
+  }
+]
