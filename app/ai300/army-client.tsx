@@ -22,17 +22,17 @@ import {
 } from "lucide-react";
 import { BOTS, BOT_CLASSES, type Bot, type BotClass } from "@/data/ai300";
 
-/** Per-class iconography + accent colours for the dark barracks theme. */
+/** Per-class iconography + accent colours for the light barracks theme. */
 const CLASS_META: Record<
   BotClass,
   { icon: LucideIcon; text: string; ring: string; chip: string }
 > = {
-  Assault:  { icon: Crosshair,  text: "text-red-400",     ring: "ring-red-500/40",     chip: "bg-red-500/10 text-red-300 border-red-500/30" },
-  Defender: { icon: Shield,     text: "text-blue-400",    ring: "ring-blue-500/40",    chip: "bg-blue-500/10 text-blue-300 border-blue-500/30" },
-  Support:  { icon: LifeBuoy,   text: "text-emerald-400", ring: "ring-emerald-500/40", chip: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30" },
-  Medic:    { icon: HeartPulse, text: "text-rose-400",    ring: "ring-rose-500/40",    chip: "bg-rose-500/10 text-rose-300 border-rose-500/30" },
-  Witch:    { icon: Sparkles,   text: "text-purple-400",  ring: "ring-purple-500/40",  chip: "bg-purple-500/10 text-purple-300 border-purple-500/30" },
-  Captain:  { icon: Star,       text: "text-amber-400",   ring: "ring-amber-500/40",   chip: "bg-amber-500/10 text-amber-300 border-amber-500/30" },
+  Assault:  { icon: Crosshair,  text: "text-red-600",     ring: "ring-red-400/50",     chip: "bg-red-50 text-red-700 border-red-200" },
+  Defender: { icon: Shield,     text: "text-blue-600",    ring: "ring-blue-400/50",    chip: "bg-blue-50 text-blue-700 border-blue-200" },
+  Support:  { icon: LifeBuoy,   text: "text-emerald-600", ring: "ring-emerald-400/50", chip: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  Medic:    { icon: HeartPulse, text: "text-rose-600",    ring: "ring-rose-400/50",    chip: "bg-rose-50 text-rose-700 border-rose-200" },
+  Witch:    { icon: Sparkles,   text: "text-purple-600",  ring: "ring-purple-400/50",  chip: "bg-purple-50 text-purple-700 border-purple-200" },
+  Captain:  { icon: Star,       text: "text-amber-600",   ring: "ring-amber-400/50",   chip: "bg-amber-50 text-amber-700 border-amber-200" },
 };
 
 type Filter = "All" | BotClass;
@@ -71,19 +71,19 @@ export function ArmyClient() {
   }
 
   return (
-    <div className="army-gradient text-white min-h-screen -mt-20 pt-32 pb-24">
+    <div className="bg-gradient-to-b from-white to-slate-50 text-slate-900 min-h-screen pt-10 md:pt-16 pb-24">
       <div className="max-w-7xl mx-auto px-6">
         {/* ── Heading ─────────────────────────────────────────────── */}
-        <div className="inline-flex items-center gap-2 border border-white/20 px-4 py-1.5 rounded-full text-xs font-bold text-amber-400 uppercase tracking-[0.25em] mb-8">
+        <div className="inline-flex items-center gap-2 border border-amber-200 bg-amber-50 px-4 py-1.5 rounded-full text-xs font-bold text-amber-600 uppercase tracking-[0.25em] mb-8">
           <Award className="w-4 h-4" /> Recruitment Open
         </div>
         <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-6">
           The AI-300 <span className="text-amber-500">Army.</span>
         </h1>
-        <p className="text-slate-400 text-lg max-w-2xl leading-relaxed mb-12">
+        <p className="text-slate-500 text-lg max-w-2xl leading-relaxed mb-12">
           Draft your battalion of AI animation units. Every bot is graded on health,
           damage, and armor — inspect a unit, read its binary catchphrase, and{" "}
-          <span className="text-white font-semibold">enlist</span> it into your army.
+          <span className="text-slate-900 font-semibold">enlist</span> it into your army.
           Tap an enlisted unit to discharge it.
         </p>
 
@@ -96,19 +96,19 @@ export function ArmyClient() {
         </div>
 
         {/* ── Your Army panel ─────────────────────────────────────── */}
-        <div className="rounded-3xl bg-white/5 border border-white/10 p-6 md:p-8 mb-14">
+        <div className="rounded-3xl bg-white border border-slate-100 shadow-sm p-6 md:p-8 mb-14">
           <div className="flex items-center gap-3 mb-5">
             <h2 className="text-2xl font-black flex items-center gap-2">
               <Trophy className="w-6 h-6 text-amber-500" /> Your Army
             </h2>
-            <span className="text-xs text-slate-500 font-mono">
+            <span className="text-xs text-slate-400 font-mono">
               {army.length} / 300 enlisted
             </span>
-            <div className="h-px flex-1 bg-white/10" />
+            <div className="h-px flex-1 bg-slate-200" />
             {army.length > 0 && (
               <button
                 onClick={() => setArmy([])}
-                className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-rose-400 transition"
+                className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-rose-500 transition"
               >
                 Discharge all
               </button>
@@ -116,7 +116,7 @@ export function ArmyClient() {
           </div>
 
           {army.length === 0 ? (
-            <div className="border border-dashed border-white/15 rounded-2xl py-12 text-center text-slate-500">
+            <div className="border border-dashed border-slate-200 rounded-2xl py-12 text-center text-slate-400">
               <Plus className="w-7 h-7 mx-auto mb-3 opacity-50" />
               <p className="text-sm font-medium">
                 No units enlisted yet. Pick from the roster below to assemble your battalion.
@@ -132,13 +132,13 @@ export function ArmyClient() {
                     key={bot.id}
                     onClick={() => dismiss(bot.id)}
                     title="Click to discharge"
-                    className="group relative flex items-center gap-3 bg-white/5 hover:bg-rose-500/10 border border-white/10 hover:border-rose-500/40 rounded-2xl pl-2 pr-4 py-2 transition"
+                    className="group relative flex items-center gap-3 bg-slate-50 hover:bg-rose-50 border border-slate-100 hover:border-rose-300 rounded-2xl pl-2 pr-4 py-2 transition"
                   >
                     <img
                       src={bot.avatar_url}
                       alt={bot.name}
                       loading="lazy"
-                      className="w-11 h-11 rounded-xl bg-slate-800/60 object-cover"
+                      className="w-11 h-11 rounded-xl bg-slate-100 object-cover"
                     />
                     <div className="text-left">
                       <div className="text-sm font-bold leading-tight">{bot.name}</div>
@@ -146,7 +146,7 @@ export function ArmyClient() {
                         <Icon className="w-3 h-3" /> {bot.bot_class}
                       </div>
                     </div>
-                    <span className="ml-1 w-6 h-6 rounded-full bg-white/10 group-hover:bg-rose-500 flex items-center justify-center transition">
+                    <span className="ml-1 w-6 h-6 rounded-full bg-slate-200 text-slate-600 group-hover:bg-rose-500 group-hover:text-white flex items-center justify-center transition">
                       <X className="w-3.5 h-3.5" />
                     </span>
                   </button>
@@ -159,17 +159,17 @@ export function ArmyClient() {
         {/* ── Roster controls ─────────────────────────────────────── */}
         <div className="flex items-center gap-3 mb-6 flex-wrap">
           <h2 className="text-2xl font-black">The Roster</h2>
-          <span className="text-xs text-slate-500 font-mono">
+          <span className="text-xs text-slate-400 font-mono">
             showing {filtered.length} of {BOTS.length}
           </span>
-          <div className="h-px flex-1 bg-white/10 min-w-[2rem]" />
-          <div className="flex items-center bg-white/5 border border-white/10 rounded-xl px-3">
-            <Search className="w-4 h-4 text-slate-500 mr-2" />
+          <div className="h-px flex-1 bg-slate-200 min-w-[2rem]" />
+          <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3">
+            <Search className="w-4 h-4 text-slate-400 mr-2" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search units..."
-              className="bg-transparent outline-none text-sm py-2.5 w-40 placeholder:text-slate-600"
+              className="bg-transparent outline-none text-sm py-2.5 w-40 placeholder:text-slate-400"
             />
           </div>
         </div>
@@ -187,7 +187,7 @@ export function ArmyClient() {
                   "flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-bold border transition " +
                   (active
                     ? "bg-amber-500 text-slate-900 border-amber-500"
-                    : "bg-white/5 text-slate-300 border-white/10 hover:border-white/30")
+                    : "bg-white text-slate-600 border-slate-200 hover:border-amber-300")
                 }
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -212,16 +212,16 @@ export function ArmyClient() {
         </div>
 
         {filtered.length === 0 && (
-          <p className="text-center text-slate-500 py-16 text-sm">
+          <p className="text-center text-slate-400 py-16 text-sm">
             No units match that filter. Try clearing the search.
           </p>
         )}
 
         {/* ── Recruitment CTA ─────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-8 rounded-3xl bg-white/5 border border-white/10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 p-8 rounded-3xl bg-white border border-slate-100 shadow-sm">
           <div className="flex-1">
             <h3 className="text-xl font-black mb-1">Looking for the humans?</h3>
-            <p className="text-slate-400 text-sm">
+            <p className="text-slate-500 text-sm">
               The AI-300 are the bots. The hand-keyed elite live in the Animation 300 roster.
             </p>
           </div>
@@ -261,10 +261,10 @@ function Stat({
   accent?: boolean;
 }) {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-      <Icon className={"w-5 h-5 mb-3 " + (accent ? "text-amber-500" : "text-slate-500")} />
+    <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm">
+      <Icon className={"w-5 h-5 mb-3 " + (accent ? "text-amber-500" : "text-slate-400")} />
       <div className="text-3xl font-black mb-1 tabular-nums">{value}</div>
-      <div className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{label}</div>
+      <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{label}</div>
     </div>
   );
 }
@@ -273,12 +273,12 @@ function StatBar({ icon: Icon, label, value, color }: { icon: LucideIcon; label:
   return (
     <div>
       <div className="flex items-center justify-between text-[11px] font-bold mb-1">
-        <span className="flex items-center gap-1.5 text-slate-400 uppercase tracking-widest">
+        <span className="flex items-center gap-1.5 text-slate-500 uppercase tracking-widest">
           <Icon className="w-3.5 h-3.5" /> {label}
         </span>
-        <span className="font-mono text-white">{value}</span>
+        <span className="font-mono text-slate-900">{value}</span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
         <div className={"h-full rounded-full " + color} style={{ width: `${value}%` }} />
       </div>
     </div>
@@ -299,9 +299,9 @@ function BotCard({
   const meta = CLASS_META[bot.bot_class];
   const Icon = meta.icon;
   return (
-    <div className="group bg-white/5 border border-white/10 rounded-3xl p-4 hover:bg-white/[0.08] hover:border-white/20 hover:-translate-y-1 transition duration-300 flex flex-col">
+    <div className="group bg-white border border-slate-100 rounded-3xl p-4 hover:border-amber-300 hover:shadow-[0_24px_60px_-18px_rgba(15,23,42,0.18)] hover:-translate-y-1 transition duration-300 flex flex-col">
       <button onClick={onInspect} className="text-left">
-        <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-gradient-to-br from-slate-700/40 to-slate-900/60 relative">
+        <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-gradient-to-br from-slate-100 to-slate-50 relative">
           <img
             src={bot.avatar_url}
             alt={bot.name}
@@ -313,15 +313,15 @@ function BotCard({
           </div>
         </div>
         <h3 className="font-black text-lg leading-tight">{bot.name}</h3>
-        <p className="text-[10px] text-slate-500 font-mono truncate mt-1" title={bot.catchphrase}>
+        <p className="text-[10px] text-slate-400 font-mono truncate mt-1" title={bot.catchphrase}>
           {bot.catchphrase}
         </p>
       </button>
 
       <div className="grid grid-cols-3 gap-2 my-4 text-center">
-        <MiniStat icon={Heart} value={bot.health} className="text-rose-400" />
-        <MiniStat icon={Zap}   value={bot.damage} className="text-amber-400" />
-        <MiniStat icon={Shield} value={bot.armor} className="text-blue-400" />
+        <MiniStat icon={Heart} value={bot.health} className="text-rose-500" />
+        <MiniStat icon={Zap}   value={bot.damage} className="text-amber-500" />
+        <MiniStat icon={Shield} value={bot.armor} className="text-blue-500" />
       </div>
 
       <button
@@ -330,7 +330,7 @@ function BotCard({
         className={
           "mt-auto w-full py-2.5 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition " +
           (enlisted
-            ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 cursor-default"
+            ? "bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default"
             : "bg-amber-500 text-slate-900 hover:bg-amber-400 active:scale-95")
         }
       >
@@ -342,7 +342,7 @@ function BotCard({
 
 function MiniStat({ icon: Icon, value, className }: { icon: LucideIcon; value: number; className: string }) {
   return (
-    <div className="bg-white/5 rounded-xl py-2">
+    <div className="bg-slate-50 rounded-xl py-2">
       <Icon className={"w-4 h-4 mx-auto mb-1 " + className} />
       <div className="text-sm font-black tabular-nums">{value}</div>
     </div>
@@ -364,17 +364,17 @@ function BotSpecs({
   const Icon = meta.icon;
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-white/10 rounded-3xl p-8 shadow-2xl"
+        className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-8 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition"
+          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition"
         >
           <X className="w-4 h-4" />
         </button>
@@ -383,7 +383,7 @@ function BotSpecs({
           <img
             src={bot.avatar_url}
             alt={bot.name}
-            className={"w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-700/40 to-slate-900/60 object-contain p-1 ring-2 " + meta.ring}
+            className={"w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 object-contain p-1 ring-2 " + meta.ring}
           />
           <div>
             <div className={"inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border mb-2 " + meta.chip}>
@@ -393,11 +393,11 @@ function BotSpecs({
           </div>
         </div>
 
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-4 mb-6">
-          <div className="text-[10px] uppercase tracking-widest text-slate-500 font-bold mb-1">
+        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-6">
+          <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">
             Catchphrase
           </div>
-          <p className="font-mono text-xs text-emerald-300 break-all leading-relaxed">
+          <p className="font-mono text-xs text-emerald-600 break-all leading-relaxed">
             {bot.catchphrase}
           </p>
         </div>
@@ -411,7 +411,7 @@ function BotSpecs({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl font-black text-sm bg-white/5 hover:bg-white/10 border border-white/10 transition"
+            className="flex-1 py-3 rounded-xl font-black text-sm bg-slate-100 hover:bg-slate-200 border border-slate-200 transition"
           >
             Back
           </button>
@@ -421,7 +421,7 @@ function BotSpecs({
             className={
               "flex-1 py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition " +
               (enlisted
-                ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 cursor-default"
+                ? "bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default"
                 : "bg-amber-500 text-slate-900 hover:bg-amber-400 active:scale-95")
             }
           >

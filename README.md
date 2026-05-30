@@ -45,7 +45,8 @@ build a pure static export that any host — including IIS — can serve.
 | **Verbs** (`/verbs`, `/verbs/[verb]`) | 84 actions grouped by category; detail page with 3D viewer, paired models, and listings |
 | **Nouns** (`/nouns`, `/nouns/[noun]`) | 76 rigged characters; detail page with an animation picker |
 | **Marketplace** (`/marketplace`) | Client-side filter/search grid over ~100 items |
-| **Animation 300** (`/animation-300`) | The dark "barracks" roster of elite, certified animators |
+| **Dictionary** (`/dictionary`) | Live coverage tracker — % of English animated, animations per word, and open words to claim |
+| **Animation 300** (`/animation-300`) | The "barracks" roster of elite, certified animators |
 | **AI-300 Army** (`/ai300`) | Interactive recruiter — draft a battalion of AI animation bots (see below) |
 
 ## Tech stack
@@ -66,8 +67,9 @@ app/
   nouns/page.tsx           # all nouns, grouped by category
   nouns/[noun]/page.tsx    # detail (3D viewer + animation picker)
   marketplace/page.tsx     # client-filterable grid
-  animation-300/page.tsx   # the "barracks" dark-themed roster
+  animation-300/page.tsx   # the "barracks" roster
   ai300/                   # interactive "AI-300 Army" recruiter (client)
+  dictionary/              # English-coverage tracker + claim flow (client)
 components/
   nav.tsx, footer.tsx
   hero-slideshow.tsx       # 4-slide auto-rotating hero (client)
@@ -77,10 +79,52 @@ components/
   viewer.tsx               # Three.js placeholder
 data/
   verbs.ts (84), nouns.ts (76), animators.ts (30), marketplace.ts (~100), ai300.ts
+  dictionary.ts            # coverage model; priority-words.ts = claimable backlog
+db/
+  schema.sql               # SQLite / Cloudflare D1 schema (the "SQL dictionary")
+  seed.sql                 # generated lexicon seed
+scripts/
+  gen-seed.ps1             # regenerates db/seed.sql from the lexicon
 docs/screenshots/          # README imagery
 magi.style*.txt            # locked style anchors for image generation
 magi-shotlist*.json        # prompt batches passed to the magi skill
 build-deploy.ps1           # one-shot build + deploy to IIS wwwroot
+```
+
+## Dictionary coverage (`/dictionary`)
+
+The headline feature: track how much of the English language has shipped an
+animation, and turn the gaps into a contribution funnel.
+
+![Dictionary coverage](docs/screenshots/dictionary.png)
+
+- **Two coverage meters** — the full English dictionary (denominator from
+  [dwyl/english-words](https://github.com/dwyl/english-words), `words_alpha.txt`)
+  and a curated **core action lexicon** of the everyday verbs people search for.
+- **Word grid** — green = animated (with a live animation count + link), grey =
+  **open to claim**. Filter by All / Animated / Open and search any word.
+- **Claim flow** — pick a word, choose target rigs, add as many tagged variations
+  as you want (`scared jump`, `back jump`, `side jump`…), and reserve it. The UI
+  is wired; accounts, real rig downloads, and uploads land with the API (below).
+
+Coverage is computed live from the verb lexicon, so every new verb (and its
+synonyms) lights up automatically. The claimable backlog lives in
+`data/priority-words.ts`, frequency-ordered from the google-10000-english list.
+
+### The SQL dictionary (`db/`)
+
+The same model as a real database, ready for the backend:
+
+- `db/schema.sql` — SQLite / **Cloudflare D1** schema: `word`, `app_user`,
+  `claim`, `animation`, `tag` + `animation_tag`, plus `word_animation_count` and
+  `coverage` views. Bulk-load the full dwyl word list into `word`.
+- `db/seed.sql` — generated seed (core lexicon + a demo animation per covered
+  word, tags, and a sample claim). Regenerate with `scripts/gen-seed.ps1`.
+
+```bash
+sqlite3 dictionary.db < db/schema.sql && sqlite3 dictionary.db < db/seed.sql
+# or, on Cloudflare:
+wrangler d1 execute animationdictionary --file db/schema.sql
 ```
 
 ## The AI-300 Army (`/ai300`)
@@ -89,7 +133,7 @@ The interactive companion to the Animation 300 roster: a **bot-battalion
 recruiter** ported from the classic *Bot Battlr* exercise and re-skinned to the
 site's barracks theme.
 
-![AI-300 Army](docs/screenshots/ai300-roster.png)
+![AI-300 Army](docs/screenshots/ai300-light.png)
 
 Browse a roster of 83 AI animation units across six combat classes (Assault,
 Defender, Support, Medic, Witch, Captain), filter and search the roster, inspect

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Box, Award, Search, User, Bot } from "lucide-react";
+import { Box, Award, Search, User, Bot, BookOpenText } from "lucide-react";
 
 export function Nav() {
   return (
@@ -17,6 +17,9 @@ export function Nav() {
 
         {/* Nav links — collapse below lg */}
         <div className="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-600">
+          <Link href="/dictionary/"     className="hover:text-blue-600 transition flex items-center gap-1.5">
+            <BookOpenText className="w-4 h-4 text-blue-600" /> Dictionary
+          </Link>
           <Link href="/verbs/"          className="hover:text-blue-600 transition">Verbs</Link>
           <Link href="/nouns/"          className="hover:text-blue-600 transition">Nouns</Link>
           <Link href="/marketplace/"    className="hover:text-blue-600 transition">Marketplace</Link>
