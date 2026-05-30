@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Box, Award, Search, User } from "lucide-react";
+import { Box, Award, Search, User, Bot } from "lucide-react";
 
 export function Nav() {
   return (
@@ -23,8 +23,10 @@ export function Nav() {
           <Link href="/animation-300/"  className="hover:text-blue-600 transition flex items-center gap-1.5">
             <Award className="w-4 h-4 text-amber-500" /> The 300
           </Link>
+          <Link href="/ai300/"          className="hover:text-blue-600 transition flex items-center gap-1.5">
+            <Bot className="w-4 h-4 text-blue-600" /> AI-300
+          </Link>
           <Link href="/marketplace/#pricing" className="hover:text-blue-600 transition">Pricing</Link>
-          <Link href="/verbs/"           className="hover:text-blue-600 transition">Docs</Link>
         </div>
 
         {/* Right actions */}
@@ -45,12 +47,12 @@ export function Nav() {
             <User className="w-4 h-4" />
           </button>
 
-          <button
-            type="button"
+          <Link
+            href="/ai300/"
             className="hidden sm:flex bg-slate-900 text-white px-4 py-2 rounded-full text-sm font-bold hover:bg-blue-600 transition shadow-lg shadow-slate-900/10 active:scale-95"
           >
             Join the Army
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
