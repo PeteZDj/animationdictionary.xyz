@@ -28,6 +28,16 @@ cmd /c 'npx --no-install next build 2>&1' | Out-Host
 $buildExit = $LASTEXITCODE
 Write-Host "  build exit: $buildExit"
 
+# Hard-gate the deploy on the actual build exit code. If next build errored we
+# absolutely do NOT want to re-publish the previous good out/ silently — that
+# masks regressions and led to a confusing "smoke tests pass on stale content"
+# situation. Keep the existing wwwroot intact instead.
+if ($buildExit -ne 0) {
+  Pop-Location
+  Stop-Transcript | Out-Null
+  Write-Host "BUILD FAILED (exit $buildExit). NOT deploying — wwwroot keeps the previous good build."
+  exit 1
+}
 if (-not (Test-Path "$src\out")) {
   Pop-Location
   Stop-Transcript | Out-Null
