@@ -1,6 +1,6 @@
 import Link from "next/link";
 import {
-  ArrowUpRight, ChevronRight, Plus,
+  ArrowUpRight, ChevronRight, Award, CheckCircle2,
 } from "lucide-react";
 import { MotionRibbon } from "@/components/motion-ribbon";
 import { HeroSlideshow } from "@/components/hero-slideshow";
@@ -88,44 +88,58 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ───────────────── LEXICON ───────────────── */}
+      {/* ───────────────── LEXICON (image grid) ───────────────── */}
       <section className="py-16 max-w-7xl mx-auto px-6">
-        <div className="flex items-center gap-4 mb-10">
-          <h2 className="text-3xl font-black">The Lexicon</h2>
-          <div className="h-px flex-1 bg-slate-200" />
+        <div className="flex items-end justify-between gap-4 mb-10">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight">The Lexicon.</h2>
+            <p className="text-slate-500 font-medium mt-1">
+              {VERBS.length} verbs across {CATEGORIES.length} categories. Every entry is rendered on
+              the same rig.
+            </p>
+          </div>
           <Link
             href="/verbs/"
-            className="text-blue-600 font-bold text-sm flex items-center gap-1 hover:underline"
+            className="text-blue-600 font-bold text-sm flex items-center gap-1 hover:underline whitespace-nowrap"
           >
             All verbs <ChevronRight className="w-4 h-4" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
-          {featuredVerbs.map((v) => (
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 mb-8">
+          {VERBS.slice(0, 16).map((v) => (
             <Link
               key={v.slug}
               href={`/verbs/${v.slug}/`}
-              className="p-4 bg-white border border-slate-100 rounded-2xl text-left hover:border-blue-500 hover:text-blue-600 transition group font-bold"
+              className="group bg-white border border-slate-100 rounded-2xl overflow-hidden hover:border-blue-500 hover:-translate-y-0.5 transition"
             >
-              <span className="block text-[10px] text-slate-400 uppercase tracking-widest mb-1 font-black">
-                {v.category}
-              </span>
-              {v.word}
-              <ArrowUpRight className="w-3 h-3 float-right opacity-0 group-hover:opacity-100 transition" />
+              <div className="aspect-square bg-gradient-to-br from-slate-100 to-slate-50 overflow-hidden relative">
+                <img
+                  src={`/img/verbs/verb-${v.slug}.png`}
+                  alt={v.word}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                />
+              </div>
+              <div className="p-2 text-center">
+                <h3 className="font-bold text-xs group-hover:text-blue-600 transition truncate">{v.word}</h3>
+              </div>
             </Link>
           ))}
         </div>
 
         {/* category chips */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((c) => (
             <Link
               key={c.id}
               href={`/verbs/#${c.id}`}
-              className={`text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full border ${c.tint}`}
+              className={`text-xs font-bold uppercase tracking-wide px-3 py-1.5 rounded-full border ${c.tint} hover:scale-105 transition`}
             >
               {c.label}
+              <span className="ml-2 font-mono opacity-60">
+                {VERBS.filter((v) => v.category === c.id).length}
+              </span>
             </Link>
           ))}
         </div>
@@ -198,49 +212,95 @@ export default function LandingPage() {
 
       {/* ───────────────── ANIMATION 300 ───────────────── */}
       <section id="army" className="mx-6 mb-20">
-        <div className="max-w-7xl mx-auto army-gradient rounded-[3rem] p-10 md:p-20 text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] -mr-20 -mt-20" />
-          <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 border border-white/20 px-4 py-1.5 rounded-full text-xs font-bold text-amber-400 uppercase tracking-[0.2em] mb-8">
-                The Elite Tier
+        <div className="max-w-7xl mx-auto relative overflow-hidden rounded-[2.5rem] bg-slate-950 text-white">
+          {/* background image — right-half */}
+          <img
+            src="/img/hero/hero-army.png"
+            alt=""
+            aria-hidden="true"
+            className="absolute right-0 top-0 h-full w-full md:w-[55%] object-contain object-right opacity-90 pointer-events-none"
+          />
+          {/* gradient overlays for legibility */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-slate-950/30" />
+          <div className="absolute -top-32 -left-32 w-[28rem] h-[28rem] bg-amber-500/15 rounded-full blur-[120px]" />
+
+          <div className="relative z-10 p-10 md:p-16 lg:p-20">
+            <div className="grid md:grid-cols-[1.4fr_1fr] gap-10 items-center mb-14">
+              <div className="max-w-xl">
+                <div className="inline-flex items-center gap-2 border border-amber-500/40 text-amber-400 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.22em] mb-8">
+                  <Award className="w-3.5 h-3.5" /> The Elite Tier
+                </div>
+                <h2 className="font-black tracking-[-0.04em] leading-[0.9] mb-7 text-[clamp(2.75rem,7vw,5.5rem)]">
+                  <span className="block">The Animation</span>
+                  <span className="block text-amber-500">300.</span>
+                </h2>
+                <p className="text-slate-300/90 text-base md:text-lg leading-relaxed mb-10 max-w-lg">
+                  An invite-only barracks of the world's top 300 character animators. Every asset
+                  hand-keyed, barracks-certified, and stress-tested. No jitter, no broken loops —
+                  only animations that ship.
+                </p>
+
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href="/animation-300/"
+                    className="inline-flex items-center gap-2 bg-amber-500 text-slate-900 px-6 py-3.5 rounded-xl font-bold text-sm hover:bg-amber-400 transition shadow-lg shadow-amber-500/20 active:scale-95"
+                  >
+                    View the Roster <ArrowUpRight className="w-4 h-4" />
+                  </Link>
+                  <Link
+                    href="/animation-300/"
+                    className="inline-flex items-center gap-2 bg-white/[0.08] border border-white/15 text-white px-6 py-3.5 rounded-xl font-bold text-sm hover:bg-white/15 transition"
+                  >
+                    Apply for Recruitment
+                  </Link>
+                </div>
               </div>
-              <h2 className="text-5xl md:text-7xl font-black mb-8 leading-none">
-                The <br />
-                Animation <span className="text-amber-500">300.</span>
-              </h2>
-              <p className="text-slate-400 text-lg leading-relaxed mb-10 max-w-lg">
-                An invite-only barracks of the top 300 animators in the industry. Hand-keyed,
-                barracks-certified, no jitter. The animations that set the standard.
-              </p>
-              <div className="flex flex-wrap gap-8 mb-10">
-                <Stat label="Elite Artists"     value="300" />
-                <Stat label="Unique Actions"    value="12k+" />
-                <Stat label="Dev Satisfaction"  value="99%" />
-              </div>
-              <Link
-                href="/animation-300/"
-                className="inline-flex items-center gap-2 bg-white text-slate-900 px-8 py-4 rounded-xl font-black hover:bg-amber-400 transition"
-              >
-                View The Roster <ArrowUpRight className="w-4 h-4" />
-              </Link>
+
+              <div className="hidden md:block" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              {ANIMATORS.slice(0, 3).map((a, i) => (
-                <div
-                  key={a.rank}
-                  className={`bg-white/5 border border-white/10 p-6 rounded-3xl ${i % 2 ? "mt-8" : ""} hover:bg-white/10 transition`}
-                >
-                  <div className={`w-12 h-12 ${i === 0 ? "bg-amber-500 shadow-amber-500/30" : i === 1 ? "bg-blue-500" : "bg-slate-500"} rounded-full mb-4 shadow-lg`} />
-                  <p className="text-sm font-bold">{a.alias}</p>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
-                    {a.specialty}
-                  </p>
-                </div>
-              ))}
-              <div className="bg-white/5 border border-white/10 border-dashed p-6 rounded-3xl flex items-center justify-center text-slate-600 hover:bg-white/10 transition">
-                <Plus className="w-6 h-6" />
+            {/* Stats row — full width */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+              <Stat value="300"  label="Elite Artists" />
+              <Stat value="12k+" label="Unique Actions" />
+              <Stat value="99%"  label="Dev Satisfaction" />
+              <Stat value="$0"   label="Refunds Issued" />
+            </div>
+
+            {/* Roster strip — actual animators */}
+            <div className="pt-10 border-t border-white/10">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="text-[10px] font-black uppercase tracking-[0.22em] text-amber-400">Featured Operators</span>
+                <div className="h-px flex-1 bg-white/10" />
+                <span className="text-[10px] font-mono text-white/40">
+                  showing 6 of {ANIMATORS.length}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                {ANIMATORS.slice(0, 6).map((a) => (
+                  <div
+                    key={a.rank}
+                    className="bg-white/[0.04] border border-white/10 p-4 rounded-2xl hover:bg-white/[0.08] hover:border-white/20 transition"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <span
+                        className={
+                          "w-9 h-9 rounded-full font-black flex items-center justify-center text-[11px] " +
+                          (a.rank <= 3
+                            ? "bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/40"
+                            : "bg-white/10 text-white border border-white/15")
+                        }
+                      >
+                        {a.rank}
+                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-amber-500" />
+                    </div>
+                    <p className="text-sm font-bold leading-tight">{a.alias}</p>
+                    <p className="text-[10px] text-slate-500 uppercase tracking-widest mt-1">
+                      {a.specialty}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -252,9 +312,9 @@ export default function LandingPage() {
 
 function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-col">
-      <span className="text-3xl font-bold">{value}</span>
-      <span className="text-xs text-slate-500 uppercase font-black tracking-wider">{label}</span>
+    <div className="bg-white/[0.04] border border-white/10 rounded-2xl px-5 py-4">
+      <span className="block text-2xl md:text-3xl font-black tracking-tight">{value}</span>
+      <span className="block text-[10px] text-slate-400 uppercase font-bold tracking-[0.18em] mt-1">{label}</span>
     </div>
   );
 }

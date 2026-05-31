@@ -152,9 +152,10 @@ export function HeroSlideshow() {
       <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-slate-950/90 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-950/70 to-transparent" />
 
-      {/* Content overlays — generous bottom padding so the controls bar
-          doesn't visually compete with the tagline. */}
-      <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center pt-24 pb-36">
+      {/* Content overlays — content vertically centred slightly above the
+          true centre of the section so it sits at the eye-line of the robot
+          and clears the bottom controls bar with comfortable air. */}
+      <div className="relative z-10 max-w-7xl mx-auto px-6 h-full flex items-center pt-12 pb-56 md:pb-64">
         <div className="relative w-full">
           {SLIDES.map((s, i) => {
             const Icon = s.badgeIcon;
