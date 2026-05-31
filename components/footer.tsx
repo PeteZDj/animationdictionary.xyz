@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Box, Twitter, Instagram, Github, Youtube, Mail, MapPin,
