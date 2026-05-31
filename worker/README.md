@@ -15,6 +15,10 @@ the API same-origin (no CORS in production).
 | GET | `/api/coverage` | – | headline coverage numbers |
 | GET | `/api/words?filter=all\|covered\|open&q=&limit=&offset=` | – | lexicon grid |
 | GET | `/api/words/:word` | – | one word: count + tags |
+| GET | `/api/animators` | – | the Animation 300 roster |
+| GET | `/api/animators/:username` | – | one animator profile (powers `/army/:username`) |
+| POST | `/api/auth/register` `{email,password,name}` | – | create an account (email + password) → session |
+| POST | `/api/auth/login` `{email,password}` | – | sign in (email + password) → session |
 | GET | `/api/auth/providers` | – | which sign-in methods are configured |
 | GET | `/api/auth/:provider/start?return=/path` | – | begin OAuth (google\|github\|afrosoftware) |
 | GET | `/api/auth/:provider/callback` | – | OAuth callback → sets session |
@@ -69,13 +73,38 @@ npm run deploy
 
 ```bash
 cp .dev.vars.example .dev.vars         # fill in client ids/secrets
-wrangler d1 migrations apply animationdictionary --local
-wrangler d1 execute animationdictionary --local --file ../db/seed.sql
+npm run setup:local                    # migrate + seed dictionary + seed animators (local D1)
 npm run dev                            # http://localhost:8787
 ```
 
 Point the front-end at it with `NEXT_PUBLIC_API_BASE=http://localhost:8787/api`
 (set in `.env.local` at the repo root) and run `npm run dev` there too.
+
+## Running on the IIS box without a Cloudflare account (current production setup)
+
+The site is live on IIS and the API runs **on the same server** as a local Worker —
+no Cloudflare deploy required. Email + password sign-up works against it today.
+
+- **IIS reverse-proxy**: `public/web.config` has an `ApiProxy` rewrite rule that
+  forwards `animationdictionary.xyz/api/*` → `http://127.0.0.1:8787/api/*`
+  (requires the ARR + URL Rewrite IIS modules, which are installed and have
+  proxy enabled).
+- **The Worker**: `worker/serve.ps1` runs `wrangler dev` in **local mode**
+  (SQLite-backed D1 + local R2 under `.wrangler/state`), bound to `127.0.0.1:8787`.
+- **Durability**: a SYSTEM scheduled task `AnimationDictionaryAPI` runs
+  `serve.ps1` at startup (restart-on-failure), so the API survives reboots.
+
+```powershell
+# manage the API process
+Start-ScheduledTask  -TaskName AnimationDictionaryAPI
+Stop-ScheduledTask   -TaskName AnimationDictionaryAPI    # then re-run after code changes
+Get-Content C:\migration\adxyz-api.log -Tail 40          # worker logs
+```
+
+This is a pragmatic stand-in. The **production-grade path** is the one-time
+provisioning above (`npm run deploy` to Cloudflare); once that route is live,
+remove the `ApiProxy` rule and the scheduled task. The front-end code is
+identical either way (it calls `/api` same-origin).
 
 ## How the front-end uses it
 

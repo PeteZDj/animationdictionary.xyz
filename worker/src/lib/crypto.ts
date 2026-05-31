@@ -63,3 +63,36 @@ export async function sha256Hex(input: string): Promise<string> {
   const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", enc.encode(input)));
   return [...digest].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
+
+// ── Password hashing (PBKDF2-SHA256) ───────────────────────────────────────
+
+async function pbkdf2(password: string, salt: Uint8Array, iterations: number, len = 32): Promise<Uint8Array> {
+  const key = await crypto.subtle.importKey("raw", enc.encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits(
+    { name: "PBKDF2", salt: salt as unknown as BufferSource, iterations, hash: "SHA-256" },
+    key,
+    len * 8
+  );
+  return new Uint8Array(bits);
+}
+
+export async function hashPassword(password: string): Promise<string> {
+  const salt = new Uint8Array(16);
+  crypto.getRandomValues(salt);
+  const iterations = 100_000;
+  const bits = await pbkdf2(password, salt, iterations);
+  return `pbkdf2$${iterations}$${b64urlEncode(salt)}$${b64urlEncode(bits)}`;
+}
+
+export async function verifyPassword(password: string, stored: string): Promise<boolean> {
+  const parts = stored.split("$");
+  if (parts.length !== 4 || parts[0] !== "pbkdf2") return false;
+  const iterations = parseInt(parts[1], 10);
+  const salt = b64urlDecode(parts[2]);
+  const expected = b64urlDecode(parts[3]);
+  const got = await pbkdf2(password, salt, iterations, expected.length);
+  if (got.length !== expected.length) return false;
+  let diff = 0;
+  for (let i = 0; i < got.length; i++) diff |= got[i] ^ expected[i];
+  return diff === 0;
+}

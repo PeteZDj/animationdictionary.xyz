@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Award, CheckCircle2, ArrowUpRight } from "lucide-react";
-import { ANIMATORS } from "@/data/animators";
+import { ANIMATOR_PROFILES } from "@/data/profiles";
 
 export const metadata = {
   title: "The Animation 300 · AnimationDictionary.xyz",
@@ -32,16 +32,17 @@ export default function ArmyPage() {
         <div className="flex items-center gap-3 mb-6">
           <h2 className="text-2xl font-black">The Roster</h2>
           <span className="text-xs text-slate-400 font-mono">
-            showing {ANIMATORS.length} of 300
+            showing {ANIMATOR_PROFILES.length} of 300
           </span>
           <div className="h-px flex-1 bg-slate-200" />
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-12">
-          {ANIMATORS.map((a) => (
-            <div
+          {ANIMATOR_PROFILES.map((a) => (
+            <Link
               key={a.rank}
-              className="flex items-center justify-between p-5 bg-white border border-slate-100 rounded-2xl hover:border-amber-300 hover:shadow-[0_18px_40px_-16px_rgba(15,23,42,0.18)] transition"
+              href={`/army/${a.username}/`}
+              className="group flex items-center justify-between p-5 bg-white border border-slate-100 rounded-2xl hover:border-amber-300 hover:shadow-[0_18px_40px_-16px_rgba(15,23,42,0.18)] transition"
             >
               <div className="flex items-center gap-4">
                 <div
@@ -57,12 +58,14 @@ export default function ArmyPage() {
                   {a.rank}
                 </div>
                 <div>
-                  <div className="text-sm font-bold">{a.alias}</div>
+                  <div className="text-sm font-bold group-hover:text-amber-600 transition">{a.alias}</div>
                   <div className="text-[10px] uppercase tracking-widest text-slate-400">{a.specialty}</div>
                 </div>
               </div>
-              {a.certified && <CheckCircle2 className="w-5 h-5 text-amber-500" />}
-            </div>
+              {a.certified
+                ? <CheckCircle2 className="w-5 h-5 text-amber-500" />
+                : <ArrowUpRight className="w-4 h-4 text-slate-300 group-hover:text-amber-500 transition" />}
+            </Link>
           ))}
         </div>
 

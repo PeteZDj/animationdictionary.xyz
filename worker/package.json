@@ -14,7 +14,10 @@
     "db:migrate:local": "wrangler d1 migrations apply animationdictionary --local",
     "db:migrate": "wrangler d1 migrations apply animationdictionary --remote",
     "db:seed:local": "wrangler d1 execute animationdictionary --local --file ../db/seed.sql",
-    "db:seed": "wrangler d1 execute animationdictionary --remote --file ../db/seed.sql"
+    "db:seed": "wrangler d1 execute animationdictionary --remote --file ../db/seed.sql",
+    "db:seed:animators:local": "wrangler d1 execute animationdictionary --local --file ../db/seed-animators.sql",
+    "db:seed:animators": "wrangler d1 execute animationdictionary --remote --file ../db/seed-animators.sql",
+    "setup:local": "wrangler d1 migrations apply animationdictionary --local && wrangler d1 execute animationdictionary --local --file ../db/seed.sql && wrangler d1 execute animationdictionary --local --file ../db/seed-animators.sql"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250510.0",

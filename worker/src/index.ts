@@ -2,8 +2,10 @@ import type { Env } from "./types";
 import { json, error, corsHeaders } from "./lib/http";
 import { coverage, words, wordDetail } from "./routes/words";
 import { createClaimRoute, uploadRoute, createAnimationRoute, rigRoute } from "./routes/contrib";
+import { animators, animatorDetail } from "./routes/animators";
 import {
   authStart, authCallback, emailStart, emailVerify, me, logout, configuredProviders,
+  register, login,
 } from "./auth";
 import { PROVIDER_IDS, type ProviderId } from "./auth/providers";
 
@@ -32,9 +34,13 @@ async function route(req: Request, env: Env): Promise<Response> {
   if (m === "GET" && p[0] === "words" && p.length === 1) return words(req, env);
   if (m === "GET" && p[0] === "words" && p[1]) return wordDetail(req, env, decodeURIComponent(p[1]));
   if (m === "GET" && p[0] === "rig" && p[1]) return rigRoute(req, env, p[1]);
+  if (m === "GET" && p[0] === "animators" && p.length === 1) return animators(req, env);
+  if (m === "GET" && p[0] === "animators" && p[1]) return animatorDetail(req, env, decodeURIComponent(p[1]));
 
   // ── auth ──────────────────────────────────────────────────────
   if (m === "GET" && p[0] === "auth" && p[1] === "providers") return json({ providers: configuredProviders(env) });
+  if (m === "POST" && p[0] === "auth" && p[1] === "register") return register(req, env);
+  if (m === "POST" && p[0] === "auth" && p[1] === "login") return login(req, env);
   if (m === "POST" && p[0] === "auth" && p[1] === "email" && p[2] === "start") return emailStart(req, env);
   if (m === "GET" && p[0] === "auth" && p[1] === "email" && p[2] === "verify") return emailVerify(req, env);
   if (p[0] === "auth" && p[1] && isProvider(p[1]) && p[2] === "start" && m === "GET") return authStart(req, env, p[1]);

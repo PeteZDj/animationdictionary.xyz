@@ -92,6 +92,56 @@ export async function getWord(env: Env, word: string): Promise<WordDetail | null
   };
 }
 
+export interface UserRow {
+  id: number;
+  email: string;
+  display_name: string | null;
+  username: string | null;
+  password_hash: string | null;
+}
+
+export async function getUserByEmail(env: Env, email: string): Promise<UserRow | null> {
+  return env.DB.prepare(
+    "SELECT id, email, display_name, username, password_hash FROM app_user WHERE email = ?"
+  ).bind(email.trim().toLowerCase()).first<UserRow>();
+}
+
+export async function usernameTaken(env: Env, username: string): Promise<boolean> {
+  const row = await env.DB.prepare("SELECT 1 AS x FROM app_user WHERE username = ?").bind(username).first();
+  return !!row;
+}
+
+/** Create (or upgrade an OAuth shell into) a password account. Returns user id. */
+export async function createCredUser(
+  env: Env,
+  u: { email: string; name: string; username: string; passwordHash: string }
+): Promise<number> {
+  const email = u.email.trim().toLowerCase();
+  await env.DB.prepare(
+    `INSERT INTO app_user (email, display_name, username, password_hash, oauth_provider)
+     VALUES (?, ?, ?, ?, 'password')
+     ON CONFLICT(email) DO UPDATE SET
+       display_name = COALESCE(app_user.display_name, excluded.display_name),
+       username = COALESCE(app_user.username, excluded.username),
+       password_hash = excluded.password_hash`
+  ).bind(email, u.name || null, u.username, u.passwordHash).run();
+  const row = await env.DB.prepare("SELECT id FROM app_user WHERE email = ?").bind(email).first<{ id: number }>();
+  return row!.id;
+}
+
+export async function listAnimators(env: Env) {
+  const res = await env.DB.prepare(
+    "SELECT username, alias, rank, specialty, certified, bio, location, joined_year, animations FROM animator ORDER BY rank"
+  ).all<any>();
+  return res.results ?? [];
+}
+
+export async function getAnimator(env: Env, username: string) {
+  return env.DB.prepare(
+    "SELECT username, alias, rank, specialty, certified, bio, location, joined_year, animations FROM animator WHERE username = ?"
+  ).bind(username.trim().toLowerCase()).first<any>();
+}
+
 export async function upsertUser(
   env: Env,
   u: { email: string; name: string; provider: string; sub?: string }

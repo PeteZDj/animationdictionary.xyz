@@ -20,7 +20,8 @@ import {
   Trophy,
   type LucideIcon,
 } from "lucide-react";
-import { BOTS, BOT_CLASSES, type Bot, type BotClass } from "@/data/ai300";
+import { BOT_CLASSES, type Bot, type BotClass } from "@/data/ai300";
+import { BOT_PROFILES, type BotProfile } from "@/data/profiles";
 
 /** Per-class iconography + accent colours for the light barracks theme. */
 const CLASS_META: Record<
@@ -41,19 +42,18 @@ export function ArmyClient() {
   const [army, setArmy] = useState<Bot[]>([]);
   const [filter, setFilter] = useState<Filter>("All");
   const [query, setQuery] = useState("");
-  const [selected, setSelected] = useState<Bot | null>(null);
 
   const enlistedIds = useMemo(() => new Set(army.map((b) => b.id)), [army]);
 
   const counts = useMemo(() => {
-    const c: Record<string, number> = { All: BOTS.length };
-    for (const cls of BOT_CLASSES) c[cls] = BOTS.filter((b) => b.bot_class === cls).length;
+    const c: Record<string, number> = { All: BOT_PROFILES.length };
+    for (const cls of BOT_CLASSES) c[cls] = BOT_PROFILES.filter((b) => b.bot_class === cls).length;
     return c;
   }, []);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return BOTS.filter((b) => {
+    return BOT_PROFILES.filter((b) => {
       if (filter !== "All" && b.bot_class !== filter) return false;
       if (q && !b.name.toLowerCase().includes(q) && !b.bot_class.toLowerCase().includes(q)) return false;
       return true;
@@ -64,7 +64,6 @@ export function ArmyClient() {
 
   function enlist(bot: Bot) {
     setArmy((prev) => (prev.some((b) => b.id === bot.id) ? prev : [...prev, bot]));
-    setSelected(null);
   }
   function dismiss(id: number) {
     setArmy((prev) => prev.filter((b) => b.id !== id));
@@ -82,17 +81,17 @@ export function ArmyClient() {
         </h1>
         <p className="text-slate-500 text-lg max-w-2xl leading-relaxed mb-12">
           Draft your battalion of AI animation units. Every bot is graded on health,
-          damage, and armor — inspect a unit, read its binary catchphrase, and{" "}
+          damage, and armor — open a unit&apos;s dossier, read its binary catchphrase, and{" "}
           <span className="text-slate-900 font-semibold">enlist</span> it into your army.
           Tap an enlisted unit to discharge it.
         </p>
 
         {/* ── Stat strip ──────────────────────────────────────────── */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-          <Stat icon={Users}  value={String(BOTS.length)}     label="Units Available" />
-          <Stat icon={Shield} value={String(BOT_CLASSES.length)} label="Combat Classes" />
-          <Stat icon={Trophy} value={String(army.length)}     label="Enlisted" accent />
-          <Stat icon={Zap}    value={armyPower.toLocaleString()} label="Army Power" accent />
+          <Stat icon={Users}  value={String(BOT_PROFILES.length)}  label="Units Available" />
+          <Stat icon={Shield} value={String(BOT_CLASSES.length)}   label="Combat Classes" />
+          <Stat icon={Trophy} value={String(army.length)}          label="Enlisted" accent />
+          <Stat icon={Zap}    value={armyPower.toLocaleString()}   label="Army Power" accent />
         </div>
 
         {/* ── Your Army panel ─────────────────────────────────────── */}
@@ -160,7 +159,7 @@ export function ArmyClient() {
         <div className="flex items-center gap-3 mb-6 flex-wrap">
           <h2 className="text-2xl font-black">The Roster</h2>
           <span className="text-xs text-slate-400 font-mono">
-            showing {filtered.length} of {BOTS.length}
+            showing {filtered.length} of {BOT_PROFILES.length}
           </span>
           <div className="h-px flex-1 bg-slate-200 min-w-[2rem]" />
           <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3">
@@ -205,7 +204,6 @@ export function ArmyClient() {
               key={bot.id}
               bot={bot}
               enlisted={enlistedIds.has(bot.id)}
-              onInspect={() => setSelected(bot)}
               onEnlist={() => enlist(bot)}
             />
           ))}
@@ -233,16 +231,6 @@ export function ArmyClient() {
           </Link>
         </div>
       </div>
-
-      {/* ── Inspect modal ─────────────────────────────────────────── */}
-      {selected && (
-        <BotSpecs
-          bot={selected}
-          enlisted={enlistedIds.has(selected.id)}
-          onClose={() => setSelected(null)}
-          onEnlist={() => enlist(selected)}
-        />
-      )}
     </div>
   );
 }
@@ -269,38 +257,20 @@ function Stat({
   );
 }
 
-function StatBar({ icon: Icon, label, value, color }: { icon: LucideIcon; label: string; value: number; color: string }) {
-  return (
-    <div>
-      <div className="flex items-center justify-between text-[11px] font-bold mb-1">
-        <span className="flex items-center gap-1.5 text-slate-500 uppercase tracking-widest">
-          <Icon className="w-3.5 h-3.5" /> {label}
-        </span>
-        <span className="font-mono text-slate-900">{value}</span>
-      </div>
-      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
-        <div className={"h-full rounded-full " + color} style={{ width: `${value}%` }} />
-      </div>
-    </div>
-  );
-}
-
 function BotCard({
   bot,
   enlisted,
-  onInspect,
   onEnlist,
 }: {
-  bot: Bot;
+  bot: BotProfile;
   enlisted: boolean;
-  onInspect: () => void;
   onEnlist: () => void;
 }) {
   const meta = CLASS_META[bot.bot_class];
   const Icon = meta.icon;
   return (
     <div className="group bg-white border border-slate-100 rounded-3xl p-4 hover:border-amber-300 hover:shadow-[0_24px_60px_-18px_rgba(15,23,42,0.18)] hover:-translate-y-1 transition duration-300 flex flex-col">
-      <button onClick={onInspect} className="text-left">
+      <Link href={`/ai/${bot.username}/`} className="text-left block">
         <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-gradient-to-br from-slate-100 to-slate-50 relative">
           <img
             src={bot.avatar_url}
@@ -312,11 +282,11 @@ function BotCard({
             <Icon className="w-3 h-3" /> {bot.bot_class}
           </div>
         </div>
-        <h3 className="font-black text-lg leading-tight">{bot.name}</h3>
+        <h3 className="font-black text-lg leading-tight group-hover:text-amber-600 transition">{bot.name}</h3>
         <p className="text-[10px] text-slate-400 font-mono truncate mt-1" title={bot.catchphrase}>
           {bot.catchphrase}
         </p>
-      </button>
+      </Link>
 
       <div className="grid grid-cols-3 gap-2 my-4 text-center">
         <MiniStat icon={Heart} value={bot.health} className="text-rose-500" />
@@ -345,90 +315,6 @@ function MiniStat({ icon: Icon, value, className }: { icon: LucideIcon; value: n
     <div className="bg-slate-50 rounded-xl py-2">
       <Icon className={"w-4 h-4 mx-auto mb-1 " + className} />
       <div className="text-sm font-black tabular-nums">{value}</div>
-    </div>
-  );
-}
-
-function BotSpecs({
-  bot,
-  enlisted,
-  onClose,
-  onEnlist,
-}: {
-  bot: Bot;
-  enlisted: boolean;
-  onClose: () => void;
-  onEnlist: () => void;
-}) {
-  const meta = CLASS_META[bot.bot_class];
-  const Icon = meta.icon;
-  return (
-    <div
-      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl p-8 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition"
-        >
-          <X className="w-4 h-4" />
-        </button>
-
-        <div className="flex items-center gap-5 mb-6">
-          <img
-            src={bot.avatar_url}
-            alt={bot.name}
-            className={"w-24 h-24 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-50 object-contain p-1 ring-2 " + meta.ring}
-          />
-          <div>
-            <div className={"inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border mb-2 " + meta.chip}>
-              <Icon className="w-3 h-3" /> {bot.bot_class}
-            </div>
-            <h3 className="text-3xl font-black leading-none">{bot.name}</h3>
-          </div>
-        </div>
-
-        <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 mb-6">
-          <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">
-            Catchphrase
-          </div>
-          <p className="font-mono text-xs text-emerald-600 break-all leading-relaxed">
-            {bot.catchphrase}
-          </p>
-        </div>
-
-        <div className="space-y-3 mb-7">
-          <StatBar icon={Heart}  label="Health" value={bot.health} color="bg-rose-500" />
-          <StatBar icon={Zap}    label="Damage" value={bot.damage} color="bg-amber-500" />
-          <StatBar icon={Shield} label="Armor"  value={bot.armor}  color="bg-blue-500" />
-        </div>
-
-        <div className="flex gap-3">
-          <button
-            onClick={onClose}
-            className="flex-1 py-3 rounded-xl font-black text-sm bg-slate-100 hover:bg-slate-200 border border-slate-200 transition"
-          >
-            Back
-          </button>
-          <button
-            onClick={onEnlist}
-            disabled={enlisted}
-            className={
-              "flex-1 py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition " +
-              (enlisted
-                ? "bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default"
-                : "bg-amber-500 text-slate-900 hover:bg-amber-400 active:scale-95")
-            }
-          >
-            {enlisted ? "Already Enlisted" : (<><Plus className="w-4 h-4" /> Enlist Unit</>)}
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

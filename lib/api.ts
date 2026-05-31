@@ -30,6 +30,14 @@ export interface ApiUser {
   uid: number;
   email: string;
   name: string;
+  username?: string | null;
+}
+
+export interface AuthResult {
+  ok: boolean;
+  status?: number;
+  error?: string;
+  user?: ApiUser;
 }
 
 async function get<T>(path: string): Promise<T | null> {
@@ -39,6 +47,28 @@ async function get<T>(path: string): Promise<T | null> {
     return (await r.json()) as T;
   } catch {
     return null;
+  }
+}
+
+async function postAuth(path: string, body: unknown): Promise<AuthResult> {
+  try {
+    const r = await fetch(`${API_BASE}${path}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(body),
+    });
+    const data = (await r.json().catch(() => ({}))) as { user?: ApiUser; error?: string };
+    if (!r.ok) {
+      return {
+        ok: false,
+        status: r.status,
+        error: data.error || (r.status === 0 ? "Can't reach the server" : "Something went wrong"),
+      };
+    }
+    return { ok: true, status: r.status, user: data.user };
+  } catch {
+    return { ok: false, error: "Can't reach the sign-in server. Is the API running?" };
   }
 }
 
@@ -54,6 +84,12 @@ export const api = {
   getWords: (filter: "all" | "covered" | "open" = "all") =>
     get<{ words: ApiWord[] }>(`/words?filter=${filter}&limit=500`),
   getMe: () => get<{ user: ApiUser | null }>("/me"),
+  async register(input: { email: string; password: string; name?: string }): Promise<AuthResult> {
+    return postAuth("/auth/register", input);
+  },
+  async login(input: { email: string; password: string }): Promise<AuthResult> {
+    return postAuth("/auth/login", input);
+  },
   async startEmail(email: string, returnTo = "/dictionary/"): Promise<{ ok: boolean; devLink?: string }> {
     try {
       const r = await fetch(`${API_BASE}/auth/email/start`, {

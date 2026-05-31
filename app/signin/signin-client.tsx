@@ -1,19 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Github, Mail, ArrowRight, BookOpenText, Check } from "lucide-react";
+import { Github, Mail, ArrowRight, BookOpenText, Check, Lock, User, AlertCircle } from "lucide-react";
 import { api } from "@/lib/api";
+
+type Mode = "signin" | "register";
 
 export function SignInClient() {
   const [returnTo, setReturnTo] = useState("/dictionary/");
+  const [mode, setMode] = useState<Mode>("register");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [sent, setSent] = useState<null | { devLink?: string }>(null);
   const [busy, setBusy] = useState(false);
+  const [pwBusy, setPwBusy] = useState(false);
 
   useEffect(() => {
     const r = new URLSearchParams(window.location.search).get("return");
     if (r && r.startsWith("/")) setReturnTo(r);
   }, []);
+
+  const emailOk = email.includes("@");
+  const pwOk = password.length >= 8;
+  const canSubmit = emailOk && pwOk && (mode === "signin" || name.trim().length > 0);
+
+  async function submitPassword(e: React.FormEvent) {
+    e.preventDefault();
+    setError(null);
+    if (!canSubmit) return;
+    setPwBusy(true);
+    const res =
+      mode === "register"
+        ? await api.register({ email, password, name })
+        : await api.login({ email, password });
+    setPwBusy(false);
+    if (res.ok) {
+      window.location.href = returnTo;
+      return;
+    }
+    setError(res.error || "Something went wrong");
+  }
 
   async function sendLink(e: React.FormEvent) {
     e.preventDefault();
@@ -30,10 +58,91 @@ export function SignInClient() {
         <div className="inline-flex items-center gap-2 border border-blue-200 bg-blue-50 px-4 py-1.5 rounded-full text-xs font-bold text-blue-600 uppercase tracking-[0.25em] mb-8">
           <BookOpenText className="w-4 h-4" /> Join the dictionary
         </div>
-        <h1 className="text-4xl font-black tracking-tight mb-2">Sign in to animate.</h1>
-        <p className="text-slate-500 mb-10">
+        <h1 className="text-4xl font-black tracking-tight mb-2">
+          {mode === "register" ? "Create your account." : "Welcome back."}
+        </h1>
+        <p className="text-slate-500 mb-8">
           Claim words, download rigs, upload animations, and earn. One account, any method.
         </p>
+
+        {/* segmented tab */}
+        <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl mb-6 text-sm font-bold">
+          {(["register", "signin"] as Mode[]).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => { setMode(m); setError(null); }}
+              className={"py-2 rounded-lg transition " + (mode === m ? "bg-white shadow-sm text-slate-900" : "text-slate-500 hover:text-slate-700")}
+            >
+              {m === "register" ? "Create account" : "Sign in"}
+            </button>
+          ))}
+        </div>
+
+        {/* email + password */}
+        <form onSubmit={submitPassword} className="space-y-3 mb-7">
+          {mode === "register" && (
+            <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3">
+              <User className="w-4 h-4 text-slate-400 mr-2" />
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                type="text"
+                placeholder="Display name"
+                className="bg-transparent outline-none text-sm py-3 w-full placeholder:text-slate-400"
+              />
+            </div>
+          )}
+          <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3">
+            <Mail className="w-4 h-4 text-slate-400 mr-2" />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              autoComplete="email"
+              placeholder="you@studio.com"
+              className="bg-transparent outline-none text-sm py-3 w-full placeholder:text-slate-400"
+            />
+          </div>
+          <div className="flex items-center bg-white border border-slate-200 rounded-xl px-3">
+            <Lock className="w-4 h-4 text-slate-400 mr-2" />
+            <input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              autoComplete={mode === "register" ? "new-password" : "current-password"}
+              placeholder={mode === "register" ? "Create a password (8+ chars)" : "Your password"}
+              className="bg-transparent outline-none text-sm py-3 w-full placeholder:text-slate-400"
+            />
+          </div>
+
+          {error && (
+            <div className="flex items-start gap-2 text-sm text-rose-600 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2.5">
+              <AlertCircle className="w-4 h-4 mt-0.5 shrink-0" /> <span>{error}</span>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={pwBusy || !canSubmit}
+            className={"w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition " +
+              (pwBusy || !canSubmit
+                ? "bg-slate-100 text-slate-400 cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700")}
+          >
+            {pwBusy
+              ? "Working…"
+              : mode === "register"
+              ? (<>Create account <ArrowRight className="w-4 h-4" /></>)
+              : (<>Sign in <ArrowRight className="w-4 h-4" /></>)}
+          </button>
+        </form>
+
+        <div className="flex items-center gap-3 my-7">
+          <div className="h-px flex-1 bg-slate-200" />
+          <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">or continue with</span>
+          <div className="h-px flex-1 bg-slate-200" />
+        </div>
 
         <div className="space-y-3">
           <a href={api.signInUrl("google", returnTo)}
@@ -57,7 +166,7 @@ export function SignInClient() {
 
         <div className="flex items-center gap-3 my-7">
           <div className="h-px flex-1 bg-slate-200" />
-          <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">or</span>
+          <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">or a passwordless link</span>
           <div className="h-px flex-1 bg-slate-200" />
         </div>
 
@@ -101,8 +210,8 @@ export function SignInClient() {
         )}
 
         <p className="text-[11px] text-slate-400 mt-8 text-center leading-relaxed">
-          By continuing you agree to the AnimationDictionary terms. Sign-in requires the API
-          (Cloudflare Worker) to be live; until then these buttons return a friendly “not configured” notice.
+          By continuing you agree to the AnimationDictionary terms. Email + password works against the
+          live API; the OAuth and magic-link options activate once their providers are configured.
         </p>
       </div>
     </div>

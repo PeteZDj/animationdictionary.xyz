@@ -1,8 +1,8 @@
 import type { Env, SessionUser } from "../types";
 import { json, error, redirect } from "../lib/http";
-import { signToken, verifyToken, randomToken } from "../lib/crypto";
+import { signToken, verifyToken, randomToken, hashPassword, verifyPassword } from "../lib/crypto";
 import { sessionCookie, logoutCookie, readSession } from "../lib/session";
-import { upsertUser, listClaims } from "../db";
+import { upsertUser, listClaims, getUserByEmail, createCredUser, usernameTaken } from "../db";
 import { getProvider, exchangeCode, type ProviderId, PROVIDER_IDS } from "./providers";
 
 /** Only allow same-site relative return paths (prevents open redirects). */
@@ -52,6 +52,64 @@ export async function authCallback(req: Request, env: Env, id: ProviderId): Prom
   } catch (e) {
     return error(502, `Sign-in failed: ${(e as Error).message}`);
   }
+}
+
+function slugifyUsername(input: string): string {
+  return (
+    input
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 24) || "user"
+  );
+}
+
+async function uniqueUsername(env: Env, base: string): Promise<string> {
+  let candidate = slugifyUsername(base);
+  if (!(await usernameTaken(env, candidate))) return candidate;
+  for (let i = 2; i < 9999; i++) {
+    const next = `${candidate}-${i}`;
+    if (!(await usernameTaken(env, next))) return next;
+  }
+  return `${candidate}-${randomToken(3)}`;
+}
+
+/** POST /api/auth/register {email, password, name?, username?} */
+export async function register(req: Request, env: Env): Promise<Response> {
+  const body = (await req.json().catch(() => ({}))) as {
+    email?: string; password?: string; name?: string; username?: string;
+  };
+  const email = (body.email ?? "").trim().toLowerCase();
+  const password = body.password ?? "";
+  if (!email.includes("@")) return error(400, "A valid email is required");
+  if (password.length < 8) return error(400, "Password must be at least 8 characters");
+
+  const existing = await getUserByEmail(env, email);
+  if (existing?.password_hash) return error(409, "An account with that email already exists — sign in instead");
+
+  const name = (body.name ?? "").trim() || email.split("@")[0];
+  const username = await uniqueUsername(env, body.username?.trim() || name || email.split("@")[0]);
+  const passwordHash = await hashPassword(password);
+  const uid = await createCredUser(env, { email, name, username, passwordHash });
+  const cookie = await sessionCookie({ uid, email, name }, env);
+  return json({ ok: true, user: { uid, email, name, username } }, { status: 201 }, { "Set-Cookie": cookie });
+}
+
+/** POST /api/auth/login {email, password} */
+export async function login(req: Request, env: Env): Promise<Response> {
+  const body = (await req.json().catch(() => ({}))) as { email?: string; password?: string };
+  const email = (body.email ?? "").trim().toLowerCase();
+  const password = body.password ?? "";
+  const user = await getUserByEmail(env, email);
+  if (!user || !user.password_hash) return error(401, "Incorrect email or password");
+  if (!(await verifyPassword(password, user.password_hash))) return error(401, "Incorrect email or password");
+  const name = user.display_name ?? email.split("@")[0];
+  const cookie = await sessionCookie({ uid: user.id, email, name }, env);
+  return json(
+    { ok: true, user: { uid: user.id, email, name, username: user.username } },
+    { status: 200 },
+    { "Set-Cookie": cookie }
+  );
 }
 
 export async function emailStart(req: Request, env: Env): Promise<Response> {
