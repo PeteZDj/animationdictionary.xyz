@@ -336,10 +336,6 @@ export default function AnimatorProfilePage({ params }: { params: { username: st
             <a 
               href={p.socials.cv}
               download
-              onClick={(e) => {
-                e.preventDefault();
-                alert(`Preparing CV download for ${p.alias}...\n- Status: Barracks-verified\n- Clearance: Level 3`);
-              }}
               className="w-full inline-flex items-center justify-center gap-2 bg-slate-900 text-white hover:bg-slate-800 px-5 py-3 rounded-2xl font-black text-xs tracking-wider uppercase transition shadow-md"
             >
               <Download className="w-4 h-4" /> Download Barracks CV
