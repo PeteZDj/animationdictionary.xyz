@@ -21,6 +21,62 @@ import { api } from "@/lib/api";
 
 type Tab = "all" | "covered" | "open";
 const RIG_OPTIONS = ["UE5", "Unity", "Mixamo", "Maya", "Blender", "Metahuman"];
+const GPT_PREVIEW_SLUGS = new Set([
+  "aim",
+  "attack",
+  "backflip",
+  "bite",
+  "block",
+  "bow",
+  "carry",
+  "cartwheel",
+  "catch",
+  "charge",
+  "cheer",
+  "chop",
+  "clap",
+  "climb",
+  "cook",
+  "craft",
+  "crawl",
+  "crouch",
+  "crouch-walk",
+  "cry",
+  "dig",
+  "dive",
+  "dodge",
+  "draw",
+  "drink",
+  "eat",
+  "facepalm",
+  "flap",
+  "flinch",
+  "fly",
+  "frontflip",
+  "hide",
+  "high-five",
+  "hop",
+  "jump",
+  "laugh",
+  "leap",
+  "parry",
+  "pounce",
+  "pull",
+  "punch",
+  "retreat",
+  "riposte",
+  "roar",
+  "run",
+  "shoot",
+  "shrug",
+  "sit-floor",
+  "slash",
+  "sprint",
+  "takedown",
+  "taunt",
+  "thumbs-up",
+  "walk",
+]);
 
 function pctText(frac: number, digits = 2) {
   return (frac * 100).toFixed(digits) + "%";
@@ -248,9 +304,24 @@ function Step({ n, title, body }: { n: string; title: string; body: string }) {
 }
 
 function WordCard({ entry, onClaim }: { entry: LexEntry; onClaim: () => void }) {
+  const testPreview =
+    entry.slug && GPT_PREVIEW_SLUGS.has(entry.slug)
+      ? `/img/verbs/verb-${entry.slug}-gpt-test.png`
+      : null;
+
   if (entry.covered) {
     return (
       <div className="group bg-white border border-emerald-200 rounded-2xl p-4 hover:shadow-[0_18px_40px_-18px_rgba(16,185,129,0.35)] transition flex flex-col">
+        {testPreview && (
+          <div className="mb-3 aspect-[4/3] overflow-hidden rounded-xl bg-slate-50 border border-slate-100">
+            <img
+              src={testPreview}
+              alt=""
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        )}
         <div className="flex items-center justify-between mb-2">
           <span className="inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-widest text-emerald-600">
             <Check className="w-3.5 h-3.5" /> Animated

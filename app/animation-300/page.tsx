@@ -45,17 +45,29 @@ export default function ArmyPage() {
               className="group flex items-center justify-between p-5 bg-white border border-slate-100 rounded-2xl hover:border-amber-300 hover:shadow-[0_18px_40px_-16px_rgba(15,23,42,0.18)] transition"
             >
               <div className="flex items-center gap-4">
-                <div
-                  className={
-                    "w-10 h-10 rounded-full font-black flex items-center justify-center text-[11px] shadow-lg " +
-                    (a.rank <= 3
-                      ? "bg-amber-500 text-slate-900 shadow-amber-500/40"
-                      : a.rank <= 10
-                      ? "bg-blue-500 text-white"
-                      : "bg-slate-200 text-slate-700")
-                  }
-                >
-                  {a.rank}
+                <div className="relative shrink-0">
+                  <div
+                    className="w-12 h-12 rounded-2xl flex items-center justify-center shadow-md overflow-hidden border border-slate-100 group-hover:scale-105 group-hover:shadow-lg transition duration-300"
+                    style={{ backgroundImage: `linear-gradient(135deg, ${a.gradient[0]}, ${a.gradient[1]})` }}
+                  >
+                    <img
+                      src={`/img/profiles/${a.username}.svg`}
+                      alt={a.alias}
+                      className="w-11 h-11 object-cover transform translate-y-0.5 group-hover:scale-110 transition duration-300"
+                    />
+                  </div>
+                  <div
+                    className={
+                      "absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full font-black flex items-center justify-center text-[9px] shadow-md border border-white " +
+                      (a.rank <= 3
+                        ? "bg-amber-500 text-slate-900"
+                        : a.rank <= 10
+                        ? "bg-blue-500 text-white"
+                        : "bg-slate-200 text-slate-700")
+                    }
+                  >
+                    {a.rank}
+                  </div>
                 </div>
                 <div>
                   <div className="text-sm font-bold group-hover:text-amber-600 transition">{a.alias}</div>

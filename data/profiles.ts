@@ -66,6 +66,15 @@ export interface AnimatorProfile {
     verbsCovered: number;
     certified: number;
   };
+  rankTitle: string;
+  tools: string[];
+  strengths: string[];
+  fullBlurb: string;
+  socials: {
+    behance: string;
+    vimeo: string;
+    cv: string;
+  };
 }
 
 function initialsOf(alias: string): string {
@@ -86,6 +95,42 @@ function buildAnimatorProfile(a: Animator): AnimatorProfile {
   const bio =
     `${a.alias} is a barracks-certified member of the Animation 300, specialising in ${a.specialty.toLowerCase()}. ` +
     `Every clip ships game-ready — clean root motion, retarget-safe skeletons, and loops that actually loop.`;
+
+  const rankTitle = a.rank <= 3
+    ? "Barracks Master General"
+    : a.rank <= 10
+    ? "Barracks Chief Commander"
+    : "Senior Barracks Specialist";
+
+  const toolsPool = [
+    ["Autodesk Maya", "MotionBuilder", "Unreal Engine 5"],
+    ["Blender 4.2", "Autodesk Maya", "Unity 3D"],
+    ["Autodesk Maya", "Cascadeur", "MotionBuilder"],
+    ["SideFX Houdini", "Blender 4.2", "Unreal Engine 5"]
+  ];
+  const tools = toolsPool[seed % toolsPool.length];
+
+  const strengthsPool = [
+    ["Root Motion Precision", "Sub-Frame Jitter Clean", "Skeleton Retargeting", "Physics Inertia Weighting"],
+    ["Keyframe Spline Perfection", "Pose-to-Pose Contrast", "Non-Linear Anim Edits", "Dynamic Secondary Dynamics"],
+    ["IK/FK Seamless Switching", "Facial Blendshape Tuning", "Combat Collision Matching", "Custom Rig Construction"],
+    ["Quadruped Locomotion Balance", "Velocity Curve Matching", "Crowd Collision Avoidance", "Physics Ragdoll Blending"]
+  ];
+  const strengths = strengthsPool[seed % strengthsPool.length];
+
+  const fullBlurb = 
+    `With over ${8 + (seed % 7)} years of elite character animation experience, ${a.alias} has set key industry standards in ${a.specialty.toLowerCase()} dynamics. ` +
+    `Before accepting induction into the barracks of the Animation 300, they contributed to multiple critically acclaimed triple-A gaming franchises, ` +
+    `shaping combat sequences, fluid traversal mechanics, and emotionally resonant character performances. ` +
+    `Their approach combines deep anatomical physics with classical animation principles, ensuring every loop is retarget-safe, root-motion compliant, ` +
+    `and perfectly integrated with state-machine graphs. Whether tailoring bespoke quadrupeds or editing high-intensity mocap cycles, they ship assets that feel alive.`;
+
+  const socials = {
+    behance: `https://www.behance.net/${username}`,
+    vimeo: `https://vimeo.com/${328000000 + (seed % 50000000)}`,
+    cv: `/docs/cv/${username}-cv.pdf`
+  };
+
   return {
     username,
     rank: a.rank,
@@ -114,6 +159,11 @@ function buildAnimatorProfile(a: Animator): AnimatorProfile {
       verbsCovered: verbs.size,
       certified: items.filter((i) => i.certified).length,
     },
+    rankTitle,
+    tools,
+    strengths,
+    fullBlurb,
+    socials
   };
 }
 
