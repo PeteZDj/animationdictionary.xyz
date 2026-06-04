@@ -6,6 +6,7 @@ import { NOUNS } from "@/data/nouns";
 import { itemsForVerb } from "@/data/marketplace";
 import { AssetCard } from "@/components/asset-card";
 import { MediaPanel } from "@/components/media-panel";
+import { clipForVerb } from "@/lib/rig";
 
 export function generateStaticParams() {
   return VERBS.map((v) => ({ verb: v.slug }));
@@ -40,9 +41,15 @@ export default function VerbDetailPage({ params }: { params: { verb: string } })
       </nav>
 
       <div className="grid lg:grid-cols-2 gap-10 mb-16">
-        {/* left: render still (default) + 3D preview tab */}
+        {/* left: render still (default) + live 3D rig animated to this verb */}
         <div>
-          <MediaPanel kind="verb" slug={v.slug} alt={`${v.word} animation render`} height={420} />
+          <MediaPanel
+            kind="verb"
+            slug={v.slug}
+            alt={`${v.word} animation render`}
+            height={420}
+            rig={clipForVerb(v.slug, v.category)}
+          />
           <div className="mt-3 grid grid-cols-3 gap-2 text-xs font-bold">
             <span className="bg-slate-100 px-3 py-2 rounded-lg text-center">
               {v.loopable ? <Repeat className="w-3 h-3 inline mr-1 text-emerald-500" /> : null}
