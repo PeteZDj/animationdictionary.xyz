@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageIcon, Box, PersonStanding, type LucideIcon } from "lucide-react";
 import { Viewer } from "@/components/viewer";
 import { RigViewer } from "@/components/rig-viewer";
@@ -27,6 +27,15 @@ export function MediaPanel({
 }) {
   const [tab, setTab] = useState<"render" | "3d">("render");
   const img = `/img/${kind}s/${kind}-${slug}.png`;
+
+  // Allow deep-linking straight to the live rig: /verbs/sprint/?view=3d (or #3d).
+  useEffect(() => {
+    if (!rig) return;
+    const wants3d =
+      new URLSearchParams(window.location.search).get("view") === "3d" ||
+      window.location.hash.toLowerCase() === "#3d";
+    if (wants3d) setTab("3d");
+  }, [rig]);
 
   return (
     <div>
