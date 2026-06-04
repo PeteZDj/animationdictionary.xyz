@@ -5,7 +5,7 @@ import { NOUNS, getNoun } from "@/data/nouns";
 import { VERBS, getVerb } from "@/data/verbs";
 import { itemsForNoun } from "@/data/marketplace";
 import { AssetCard } from "@/components/asset-card";
-import { Viewer } from "@/components/viewer";
+import { MediaPanel } from "@/components/media-panel";
 
 export function generateStaticParams() {
   return NOUNS.map((n) => ({ noun: n.slug }));
@@ -41,9 +41,9 @@ export default function NounDetailPage({ params }: { params: { noun: string } })
       </nav>
 
       <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 mb-16">
-        {/* left: 3D viewer for the MODEL */}
+        {/* left: render still (default) + 3D preview tab for the MODEL */}
         <div>
-          <Viewer label={`noun-${n.slug}`} height={460} />
+          <MediaPanel kind="noun" slug={n.slug} alt={`${n.word} model render`} height={460} />
           <div className="mt-3 grid grid-cols-3 gap-2 text-xs font-bold">
             <span className="bg-slate-100 px-3 py-2 rounded-lg text-center uppercase tracking-wide">
               {n.category}
