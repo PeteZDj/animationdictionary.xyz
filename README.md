@@ -10,6 +10,10 @@
 
 ---
 
+## Live preview
+
+![animationdictionary.xyz homepage](docs/screenshot.png)
+
 ## Screenshots
 
 ### Hero — "Motion Vocabulary"
