@@ -1,6 +1,16 @@
 # Generate all remaining verb + noun images and report totals.
+# Requires GEMINI_API_KEY in the environment (never commit API keys to git).
 $ErrorActionPreference = 'Continue'
-$env:GEMINI_API_KEY = 'AIzaSyCn3x30WfLCy9L-Tg1429YNczttwtjK7-E'
+if (-not $env:GEMINI_API_KEY) {
+  Write-Error @"
+GEMINI_API_KEY is not set. Export your key before running, e.g. in PowerShell:
+
+  `$env:GEMINI_API_KEY = '<your-key-from-google-ai-studio>'
+
+Or store it in a local .env file (gitignored) and load it in your shell session.
+"@
+  exit 1
+}
 $repo = 'C:\inetpub\repos\animationdictionary.xyz'
 $magi = "$env:USERPROFILE\.claude\skills\magi\scripts\magi.ps1"
 Set-Location $repo
@@ -40,4 +50,3 @@ Write-Host ""
 Write-Host "##### done #####"
 Stop-Transcript | Out-Null
 Write-Host "Log: $log"
-Remove-Item Env:GEMINI_API_KEY -ErrorAction SilentlyContinue
