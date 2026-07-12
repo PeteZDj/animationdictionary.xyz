@@ -109,3 +109,11 @@ window.ANSWERS = {
   99: { status:"doing", text:"Chase PMF \u2014 real two-sided liquidity: creators listing and buyers purchasing." },
   100:{ status:"doing", text:"Evaluate expansion: more asset types (VFX, SFX), engine plugins and enterprise licensing." }
 };
+
+/* __DESIGN__ brand-adaptive design tokens for the /100 page */
+window.SITE.design = {"mode":"light","primary":"#E8B04B","accent":"#84CC16","scale":"#ef7c1a","launch":"#a855f7","setup":"#E8B04B","bg":"#ffffff","bg2":"#f5f7fb","card":"#ffffff","line":"#e7ecf3","radius":14,"headFont":"'Space Grotesk'","bodyFont":"'Inter'","fontLink":"https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap","logo":"/favicon.svg"};
+/* __END_DESIGN__ */
+
+/* __DESIGN__ brand-adaptive design tokens for the /100 page */
+window.SITE.design = {"mode":"light","primary":"#E8B04B","accent":"#84CC16","scale":"#ef7c1a","launch":"#a855f7","setup":"#E8B04B","bg":"#ffffff","bg2":"#f5f7fb","card":"#ffffff","line":"#e7ecf3","radius":14,"headFont":"'Plus Jakarta Sans'","bodyFont":"'Plus Jakarta Sans'","fontLink":"https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap","logo":"/favicon.svg"};
+/* __END_DESIGN__ */

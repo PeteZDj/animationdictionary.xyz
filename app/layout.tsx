@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   description:
     "A semantic marketplace for 3D characters and animations. Search by verb. $1 per animation, packs from $5.",
   metadataBase: new URL("https://animationdictionary.xyz"),
+  icons: { icon: [{ url: "/favicon.svg", type: "image/svg+xml" }] },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
