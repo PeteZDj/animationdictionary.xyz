@@ -5,7 +5,7 @@ import { createClaimRoute, uploadRoute, createAnimationRoute, rigRoute } from ".
 import { animators, animatorDetail } from "./routes/animators";
 import {
   authStart, authCallback, emailStart, emailVerify, me, logout, configuredProviders,
-  register, login,
+  register, login, gsiLogin,
 } from "./auth";
 import { PROVIDER_IDS, type ProviderId } from "./auth/providers";
 
@@ -45,6 +45,7 @@ async function route(req: Request, env: Env): Promise<Response> {
   if (m === "GET" && p[0] === "auth" && p[1] === "email" && p[2] === "verify") return emailVerify(req, env);
   if (p[0] === "auth" && p[1] && isProvider(p[1]) && p[2] === "start" && m === "GET") return authStart(req, env, p[1]);
   if (p[0] === "auth" && p[1] && isProvider(p[1]) && p[2] === "callback" && m === "GET") return authCallback(req, env, p[1]);
+  if (m === "POST" && p[0] === "auth" && p[1] === "gsi") return gsiLogin(req, env);
   if (m === "POST" && p[0] === "auth" && p[1] === "logout") return logout(req, env);
   if (m === "GET" && p[0] === "me") return me(req, env);
 

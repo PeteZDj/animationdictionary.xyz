@@ -1,8 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Github, Mail, ArrowRight, BookOpenText, Check, Lock, User, AlertCircle } from "lucide-react";
 import { api } from "@/lib/api";
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (cfg: object) => void;
+          renderButton: (el: HTMLElement, cfg: object) => void;
+        };
+      };
+    };
+  }
+}
 
 type Mode = "signin" | "register";
 
@@ -16,11 +29,47 @@ export function SignInClient() {
   const [sent, setSent] = useState<null | { devLink?: string }>(null);
   const [busy, setBusy] = useState(false);
   const [pwBusy, setPwBusy] = useState(false);
+  const googleBtnRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const r = new URLSearchParams(window.location.search).get("return");
     if (r && r.startsWith("/")) setReturnTo(r);
   }, []);
+
+  useEffect(() => {
+    const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (!clientId) return;
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+    script.onload = () => {
+      window.google?.accounts.id.initialize({
+        client_id: clientId,
+        callback: async (response: { credential: string }) => {
+          setError(null);
+          const res = await api.gsiSignIn(response.credential, returnTo);
+          if (res.ok) {
+            window.location.href = returnTo;
+          } else {
+            setError(res.error || "Google sign-in failed");
+          }
+        },
+      });
+      if (googleBtnRef.current) {
+        window.google?.accounts.id.renderButton(googleBtnRef.current, {
+          type: "standard",
+          text: "continue_with",
+          theme: "outline",
+          size: "large",
+          width: "384",
+          logo_alignment: "left",
+        });
+      }
+    };
+    return () => { if (document.head.contains(script)) document.head.removeChild(script); };
+  }, [returnTo]);
 
   const emailOk = email.includes("@");
   const pwOk = password.length >= 8;
@@ -145,11 +194,7 @@ export function SignInClient() {
         </div>
 
         <div className="space-y-3">
-          <a href={api.signInUrl("google", returnTo)}
-             className="flex items-center gap-3 w-full border border-slate-200 bg-white rounded-xl px-4 py-3 font-bold hover:border-slate-400 hover:shadow-sm transition">
-            <GoogleMark /> Continue with Google
-            <ArrowRight className="w-4 h-4 ml-auto text-slate-300" />
-          </a>
+          <div ref={googleBtnRef} className="flex justify-center min-h-[44px]" />
 
           <a href={api.signInUrl("github", returnTo)}
              className="flex items-center gap-3 w-full border border-slate-200 bg-white rounded-xl px-4 py-3 font-bold hover:border-slate-400 hover:shadow-sm transition">
@@ -215,17 +260,6 @@ export function SignInClient() {
         </p>
       </div>
     </div>
-  );
-}
-
-function GoogleMark() {
-  return (
-    <svg viewBox="0 0 24 24" className="w-5 h-5" aria-hidden>
-      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.27-4.74 3.27-8.1Z" />
-      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.65l-3.57-2.77c-.99.66-2.26 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
-      <path fill="#FBBC05" d="M5.84 14.11a6.6 6.6 0 0 1 0-4.22V7.05H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z" />
-      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.05l3.66 2.84C6.71 7.3 9.14 5.38 12 5.38Z" />
-    </svg>
   );
 }
 

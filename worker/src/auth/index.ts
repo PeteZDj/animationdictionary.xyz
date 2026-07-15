@@ -3,7 +3,44 @@ import { json, error, redirect } from "../lib/http";
 import { signToken, verifyToken, randomToken, hashPassword, verifyPassword } from "../lib/crypto";
 import { sessionCookie, logoutCookie, readSession } from "../lib/session";
 import { upsertUser, listClaims, getUserByEmail, createCredUser, usernameTaken } from "../db";
-import { getProvider, exchangeCode, type ProviderId, PROVIDER_IDS } from "./providers";
+import { getProvider, exchangeCode, type ProviderId, PROVIDER_IDS, type NormalizedUser } from "./providers";
+
+async function verifyGoogleIdToken(idToken: string, clientId: string): Promise<NormalizedUser> {
+  const parts = idToken.split(".");
+  if (parts.length !== 3) throw new Error("malformed token");
+  const [headerB64, payloadB64, sigB64] = parts;
+
+  const b64 = (s: string) => s.replace(/-/g, "+").replace(/_/g, "/");
+  const payload = JSON.parse(atob(b64(payloadB64)));
+  const header = JSON.parse(atob(b64(headerB64)));
+
+  const now = Math.floor(Date.now() / 1000);
+  if (payload.exp < now) throw new Error("token expired");
+  if (payload.aud !== clientId) throw new Error("invalid audience");
+  if (!["https://accounts.google.com", "accounts.google.com"].includes(payload.iss)) throw new Error("invalid issuer");
+
+  const jwksResp = await fetch("https://www.googleapis.com/oauth2/v3/certs", { cf: { cacheTtl: 3600 } } as RequestInit);
+  if (!jwksResp.ok) throw new Error("failed to fetch Google public keys");
+  const jwks = (await jwksResp.json()) as { keys: { kid: string; n: string; e: string; kty: string }[] };
+
+  const key = jwks.keys.find((k) => k.kid === header.kid);
+  if (!key) throw new Error("unknown key ID");
+
+  const cryptoKey = await crypto.subtle.importKey(
+    "jwk", key, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]
+  );
+
+  const signingInput = new TextEncoder().encode(`${headerB64}.${payloadB64}`);
+  const sig = Uint8Array.from(atob(b64(sigB64)), (c) => c.charCodeAt(0));
+  const valid = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", cryptoKey, sig, signingInput);
+  if (!valid) throw new Error("invalid signature");
+
+  return {
+    email: payload.email,
+    name: payload.name ?? payload.given_name ?? (payload.email as string).split("@")[0],
+    sub: String(payload.sub),
+  };
+}
 
 /** Only allow same-site relative return paths (prevents open redirects). */
 function safeReturn(input: string | null): string {
@@ -155,6 +192,22 @@ export async function me(req: Request, env: Env): Promise<Response> {
 
 export async function logout(_req: Request, env: Env): Promise<Response> {
   return json({ ok: true }, { status: 200 }, { "Set-Cookie": logoutCookie() });
+}
+
+/** POST /api/auth/gsi  { credential: <google-id-token>, return?: "/path" } */
+export async function gsiLogin(req: Request, env: Env): Promise<Response> {
+  const body = (await req.json().catch(() => ({}))) as { credential?: string; return?: string };
+  if (!body.credential || typeof body.credential !== "string") return error(400, "Missing credential");
+  if (!env.GOOGLE_CLIENT_ID) return error(503, "Google sign-in is not configured");
+
+  try {
+    const profile = await verifyGoogleIdToken(body.credential, env.GOOGLE_CLIENT_ID);
+    const uid = await upsertUser(env, { email: profile.email, name: profile.name, provider: "google", sub: profile.sub });
+    const cookie = await sessionCookie({ uid, email: profile.email, name: profile.name }, env);
+    return json({ ok: true, redirectTo: safeReturn(body.return ?? null) }, { status: 200 }, { "Set-Cookie": cookie });
+  } catch (e) {
+    return error(401, `Google sign-in failed: ${(e as Error).message}`);
+  }
 }
 
 export function configuredProviders(env: Env): { id: string; configured: boolean }[] {

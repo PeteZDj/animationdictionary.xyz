@@ -3,14 +3,14 @@
   "name": "animationdictionary-api",
   "main": "src/index.ts",
   "compatibility_date": "2026-05-15",
+  "workers_dev": true,
   "compatibility_flags": ["nodejs_compat"],
 
-  // Route /api/* on the apex domain to this Worker. IIS keeps serving the
-  // static site; Cloudflare sends only /api/* here, so the browser calls the
-  // API same-origin (no CORS needed in production).
-  "routes": [
-    { "pattern": "animationdictionary.xyz/api/*", "zone_name": "animationdictionary.xyz" }
-  ],
+  // Route must be added manually in the Cloudflare dashboard of the account
+  // that owns the animationdictionary.xyz zone. Pattern: animationdictionary.xyz/api/*
+  // "routes": [
+  //   { "pattern": "animationdictionary.xyz/api/*", "zone_name": "animationdictionary.xyz" }
+  // ],
 
   "vars": {
     "SITE_ORIGIN": "https://animationdictionary.xyz",
@@ -22,15 +22,16 @@
     {
       "binding": "DB",
       "database_name": "animationdictionary",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "43c001d4-27d4-4972-95d5-5f5924d535d0",
       "migrations_dir": "migrations"
     }
   ],
 
   // R2: rig kits + uploaded animation bundles.
-  "r2_buckets": [
-    { "binding": "BUCKET", "bucket_name": "animationdictionary-assets" }
-  ],
+  // Uncomment after enabling R2 in Cloudflare dashboard (requires billing method).
+  // "r2_buckets": [
+  //   { "binding": "BUCKET", "bucket_name": "animationdictionary-assets" }
+  // ],
 
   "observability": { "enabled": true, "head_sampling_rate": 1 }
 

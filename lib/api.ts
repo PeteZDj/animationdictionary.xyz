@@ -103,6 +103,9 @@ export const api = {
       return { ok: false };
     }
   },
+  async gsiSignIn(credential: string, returnTo = "/dictionary/"): Promise<AuthResult> {
+    return postAuth("/auth/gsi", { credential, return: returnTo });
+  },
   async claim(word: string, rigs: string[], tags: string[]): Promise<{ ok: boolean; status?: number }> {
     try {
       const r = await fetch(`${API_BASE}/claims`, {

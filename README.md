@@ -201,3 +201,18 @@ run feel cohesive (a single recurring robot rig, consistent lighting, etc.).
 
 All rights reserved © animationdictionary.xyz. Mock catalogue data and
 AI-generated imagery are for demonstration purposes.
+
+
+## Mobile App (React Native)
+
+<img src="animationdictionary-rn/assets/images/icon.png" alt="Animation Dictionary app icon" width="72" align="left" />
+
+**Animation Dictionary for Android** is a native mobile app built with **React Native (Expo)** -- explore animation terminology with clear definitions, examples and visual references.
+
+**[Download the Android app](https://afrosoftware.com/downloads/animationdictionary.apk)**
+
+- **Source:** [`animationdictionary-rn/`](animationdictionary-rn) -- the full Expo Router + TypeScript project.
+- **Stack:** Expo SDK 57, Expo Router, TypeScript, React Native, AsyncStorage.
+- Runs on Android 7.0+ (arm64 / armv7). You may need to allow *install from unknown sources*.
+
+<br clear="left" />
