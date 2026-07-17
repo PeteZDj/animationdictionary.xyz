@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {
-  Box, Twitter, Instagram, Github, Youtube, Mail, MapPin,
+  Box, Twitter, Instagram, Github, Youtube, Mail, MapPin, Download,
 } from "lucide-react";
 
 const COLS = [
@@ -104,6 +104,15 @@ export function Footer() {
                 </Link>
               ))}
             </div>
+
+            {/* Download Android app (APK) */}
+            <a
+              href="/downloads/animationdictionary-android.apk"
+              download
+              className="mt-5 inline-flex items-center gap-2 text-sm text-slate-300 hover:text-white transition"
+            >
+              <Download className="w-4 h-4" /> Get the <span className="underline underline-offset-2">Android app</span>
+            </a>
           </div>
 
           {/* Link columns */}
